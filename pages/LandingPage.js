@@ -3,6 +3,9 @@ import dynamic from 'next/dynamic'; // Import dynamic from 'next/dynamic'
 import 'tailwindcss/tailwind.css';
 const ApexChart = dynamic(() => import('react-apexcharts'), { ssr: false }); // Use dynamic import
 
+import Barra from './navbar';
+
+
 const LandingPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -71,9 +74,11 @@ const LandingPage = () => {
 
   return (
     <div className="min-h-screen bg-blue-100">
+      {/* Navbar */}
+      <Barra />
       {/* Login Form */}
-      <div className="w-1/2 p-8 m-auto">
-        <div className="bg-white p-8 rounded-lg shadow-md">
+      {/* <div className="w-1/2 p-8 m-auto">
+        <div className="bg-white p-8 rounded-lg shadow-md border border-gray-200">
           <h1 className="text-3xl font-semibold mb-4 text-center">Bienvenido a Stockpedia 🌐</h1>
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
@@ -107,13 +112,13 @@ const LandingPage = () => {
             </button>
           </form>
         </div>
-      </div>
+      </div> */}
 
       {/* Content */}
-      <div className="flex-1 flex justify-center">
+      <div className="flex-1 flex justify-center ">
         {/* Stocks Table */}
         <div className="w-1/2 p-8">
-          <div className="bg-white rounded-lg shadow-md p-4">
+          <div className="bg-white border border-gray-200 rounded-lg shadow-md p-4">
             <h2 className="text-xl font-semibold mb-4">Stock Information</h2>
             <table className="w-full border-collapse">
               <thead>
@@ -139,21 +144,24 @@ const LandingPage = () => {
         </div>
 
         {/* Graph */}
-        <div className="w-2/5 p-9">
-          <ApexChart
-            options={chartData.options}
-            series={chartData.series}
-            type="area"
-            width="100%"
-            style={{
-              float: "none",
-              width: "100%",
-              margin: "0 auto",
-            }}
-          />
-        </div>
+        <div className="w-1/2 p-8">
+          <div className="bg-white border border-gray-200 rounded-lg shadow-md p-4">
+            <h2 className="text-xl font-semibold mb-4">Stock Price</h2>
+            <ApexChart
+              options={chartData.options}
+              series={chartData.series}
+              type="area"
+              width="100%"
+              style={{
+                float: "none",
+                width: "100%",
+                margin: "0 auto",
+              }}
+            />
+          </div>
       </div>
     </div>
+  </div>
   );
 };
 
