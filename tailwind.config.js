@@ -5,7 +5,8 @@ module.exports = {
     './content/**/*.html',
     './src/*.js',
     './node_modules/flowbite/**/*.js',
-    './pages/**/*.js'
+    './pages/**/*.js',
+    './src/**/*.js',
   ],
   safelist: [
     'w-64',
