@@ -1,15 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import 'tailwindcss/tailwind.css';
-import ApexChart from 'react-apexcharts';
 
 import Barra from '../components/navbar';
 
-
 const LandingPage = () => {
-    const [stocksData, setStocksData] = useState([]);
     const [selectedStock, setSelectedStock] = useState(null);
-    const [stockData, setStockData] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -21,24 +17,6 @@ const LandingPage = () => {
     // Handle stock selection
     const handleRowClick = (symbol) => {
         setSelectedStock(symbol);
-    };
-
-    // Sample data for ApexCharts
-    const chartData = {
-        options: {
-            chart: {
-                type: 'area',
-            },
-            xaxis: {
-                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-            },
-        },
-        series: [
-            {
-                name: 'Stock Price',
-                data: [30, 40, 35, 50, 49, 60],
-            },
-        ],
     };
 
     // Mockup data for the table
@@ -81,9 +59,9 @@ const LandingPage = () => {
             <Barra />
 
             {/* Content */}
-            <div className="flex-1 flex justify-center ">
+            <div className="flex justify-center p-8">
                 {/* Stocks Table */}
-                <div className="w-1/2 p-8">
+                <div className="w-full">
                     <div className="bg-white border border-gray-200 rounded-lg shadow-md p-4">
                         <h2 className="text-xl font-semibold mb-4">Stock Information</h2>
                         <table className="w-full border-collapse">
@@ -97,9 +75,13 @@ const LandingPage = () => {
                             </thead>
                             <tbody>
                                 {tableData.map((stock, index) => (
-                                    <tr key={index} className={`${index % 2 === 0 ? 'bg-blue-100' : 'bg-white'
+                                    <tr
+                                        key={index}
+                                        className={`${index % 2 === 0 ? 'bg-blue-100' : 'bg-white'
                                         } hover:bg-blue-400 ${selectedStock === stock.symbol ? 'bg-blue-300' : ''
-                                        }`} onClick={() => handleRowClick(stock.symbol)}>
+                                        }`}
+                                        onClick={() => handleRowClick(stock.symbol)}
+                                    >
                                         <td className="py-2 px-4 border">{stock.symbol}</td>
                                         <td className="py-2 px-4 border">{stock.companyName}</td>
                                         <td className="py-2 px-4 border">{stock.currentPrice}</td>
@@ -110,27 +92,9 @@ const LandingPage = () => {
                         </table>
                     </div>
                 </div>
-
-                {/* Graph */}
-                <div className="w-1/2 p-8">
-                    <div className="bg-white border border-gray-200 rounded-lg shadow-md p-4">
-                        <h2 className="text-xl font-semibold mb-4">Stock Price</h2>
-                        <ApexChart
-                            options={chartData.options}
-                            series={chartData.series}
-                            type="area"
-                            width="100%"
-                            style={{
-                                float: "none",
-                                width: "100%",
-                                margin: "0 auto",
-                            }}
-                        />
-                    </div>
-                </div>
             </div>
         </div>
     );
 };
 
-export default LandingPage
+export default LandingPage;
