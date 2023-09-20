@@ -1,23 +1,24 @@
-import React, { useState } from 'react';
-import dynamic from 'next/dynamic'; // Import dynamic from 'next/dynamic'
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import dynamic from 'next/dynamic';
 import 'tailwindcss/tailwind.css';
 const ApexChart = dynamic(() => import('react-apexcharts'), { ssr: false }); // Use dynamic import
 
-import Barra from './navbar';
+import Barra from '../components/navbar';
 
 
 const LandingPage = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
   const [stocksData, setStocksData] = useState([]);
+  const [selectedStock, setSelectedStock] = useState(null);
+  const [stockData, setStockData] = useState(null);
+  const navigate = useNavigate();
 
-  // Handle form submission
-  const handleSubmit = async (e) => {
-    e.preventDefault();
 
-    // Use Flowbyte or your preferred method to handle user signup and authentication
-    // You may also fetch stock data here and update the stocksData state
-    // Example API call: fetchStockData(username, password).then(data => setStocksData(data));
+
+  // Handle stock selection
+  const handleRowClick = (symbol) => {
+    setSelectedStock(stockSymbol);
+    navigate('/stock-details', { state: { selectedStock: stockSymbol } });
   };
 
   // Sample data for ApexCharts
@@ -76,43 +77,6 @@ const LandingPage = () => {
     <div className="min-h-screen bg-blue-100">
       {/* Navbar */}
       <Barra />
-      {/* Login Form */}
-      {/* <div className="w-1/2 p-8 m-auto">
-        <div className="bg-white p-8 rounded-lg shadow-md border border-gray-200">
-          <h1 className="text-3xl font-semibold mb-4 text-center">Bienvenido a Stockpedia 🌐</h1>
-          <form onSubmit={handleSubmit}>
-            <div className="mb-4">
-              <label htmlFor="username" className="block text-gray-700">Username:</label>
-              <input
-                type="text"
-                id="username"
-                className="w-full p-2 border rounded"
-                placeholder="Enter your username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <label htmlFor="password" className="block text-gray-700">Password:</label>
-              <input
-                type="password"
-                id="password"
-                className="w-full p-2 border rounded"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
-            <button
-              type="submit"
-              className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 w-full">
-              Sign Up and Start Trading
-            </button>
-          </form>
-        </div>
-      </div> */}
 
       {/* Content */}
       <div className="flex-1 flex justify-center ">
@@ -122,7 +86,7 @@ const LandingPage = () => {
             <h2 className="text-xl font-semibold mb-4">Stock Information</h2>
             <table className="w-full border-collapse">
               <thead>
-                <tr className="bg-blue-200">
+                <tr className="bg-blue-200"> 
                   <th className="py-2 px-4 border">Symbol</th>
                   <th className="py-2 px-4 border">Company Name</th>
                   <th className="py-2 px-4 border">Current Price</th>
@@ -131,7 +95,7 @@ const LandingPage = () => {
               </thead>
               <tbody>
                 {tableData.map((stock, index) => (
-                  <tr key={index} className={index % 2 === 0 ? 'bg-blue-100' : 'bg-white'}>
+                  <tr key={index} className={index % 2 === 0 ? 'bg-blue-100' : 'bg-white'} onClick={handleRowClick(stock.symbol)}>
                     <td className="py-2 px-4 border">{stock.symbol}</td>
                     <td className="py-2 px-4 border">{stock.companyName}</td>
                     <td className="py-2 px-4 border">{stock.currentPrice}</td>
