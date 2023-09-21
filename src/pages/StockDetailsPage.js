@@ -5,7 +5,7 @@ import axios from 'axios';
 import Barra from '../components/navbar';
 import StockChart from '../components/StockChart';
 
-const API_URL = 'https://stockpedia.me/stocks/';
+const API_URL = 'https://vicentethomas.me/stocks/';
 
 const StockDetailsPage = () => {
     const [stockData, setStockData] = useState(null);
