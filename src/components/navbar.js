@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import 'tailwindcss/tailwind.css';
 import { useAuth0 } from "@auth0/auth0-react";
 
@@ -28,6 +28,15 @@ const LogoutButton = () => {
 function Barra() {
   const [isOpen, setIsOpen] = useState(false);
   const { user, isAuthenticated, isLoading } = useAuth0();
+  const [walletBalance, setWalletBalance] = useState(5000);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setWalletBalance(prevBalance => prevBalance + Math.random() * 100);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   if (isLoading) {
     return (
@@ -50,6 +59,7 @@ function Barra() {
           <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Emoji_u1f310.svg/192px-Emoji_u1f310.svg.png" className="h-8 mr-3" alt="Stockpedia Logo" />
           <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Stockpedia</span>
         </a>
+
         <div className="flex md:order-2">
           {isAuthenticated ? <LogoutButton /> : <LoginButton />}
           <button type="button" onClick={() => setIsOpen(!isOpen)} className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-cta" aria-expanded={isOpen}>
@@ -85,6 +95,7 @@ function Barra() {
             </li>
           </ul>
         </div>
+      </div>
       </div>
     </nav>
   );
