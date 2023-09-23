@@ -5,9 +5,9 @@ import Barra from '../components/navbar';
 
 const WalletInput = ({ numberValue, handleNumberChange, handleSubmit }) => {
   return (
-    <div className="bg-white shadow-md rounded-lg px-5 pt-6 pb-5 m-4 flex flex-col">
+    <div className="bg-white shadow-md rounded-lg px-8 py-2 m-6 w-3/4">
       <div className="flex flex-col items-center">
-        <label htmlFor="numberInput" className="mb-2">
+        <label htmlFor="numberInput" className="mb-4 text-l font-semibold">
           Agregar dinero a mi billetera:
         </label>
         <input
@@ -16,15 +16,31 @@ const WalletInput = ({ numberValue, handleNumberChange, handleSubmit }) => {
           placeholder="$asdasd"
           value={numberValue}
           onChange={handleNumberChange}
-          className="border border-gray-300 rounded-lg px-3 py-2 mb-2"
+          className="border border-gray-300 rounded-lg px-4 py-2 mb-4"
         />
         <button
           onClick={handleSubmit}
-          className="bg-green-500 hover:bg-green-600 text-white font-medium rounded-lg text-sm px-4 py-2 focus:ring-4 focus:outline-none focus:ring-green-300 mt-2"
+          className="bg-green-500 hover:bg-green-600 text-white font-medium rounded-lg text-lg px-6 py-3 focus:ring-4 focus:outline-none focus:ring-green-300 mt-4"
         >
           Agregar
         </button>
       </div>
+    </div>
+  );
+};
+
+const StocksDiv = () => {
+  // Assume the user's stocks are stored in userStocks array
+  const userStocks = ['AAPL', 'GOOGL', 'AMZN']; // Replace with actual user's stocks
+
+  return (
+    <div className="bg-white shadow-md rounded-lg p-8 m-6 w-3/4">
+      <h2 className="text-xl font-semibold mb-4">Tus Acciones</h2>
+      <ul>
+        {userStocks.map((stock, index) => (
+          <li key={index}>{stock}</li>
+        ))}
+      </ul>
     </div>
   );
 };
@@ -50,16 +66,16 @@ export const Profile = () => {
   return (
     <div className="min-h-screen bg-blue-100">
       <Barra />
-      <div className="flex-1 flex justify-center p-6">
+      <div className="flex-1 flex justify-center p-5">
         <div className="flex flex-col items-center w-1/2 p-8">
-          <div className="bg-white border border-gray-200 rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold mb-4">Informacion Perfil</h2>
-
-            <div className="flex justify-center mb-4">
+          <div className="bg-white border border-gray-200 rounded-lg shadow-md p-8 w-3/4">
+            <h2 className="text-xl font-semibold mb-6">Informacion Perfil</h2>
+  
+            <div className="flex justify-center mb-6">
               <img src={user.picture} alt={user.name} className="rounded-full" />
             </div>
-
-            <div className="mb-4">
+  
+            <div className="mb-6">
               {user.name === user.email ? (
                 <>
                   <p className="text-gray-500">Correo: {user.email}</p>
@@ -73,18 +89,26 @@ export const Profile = () => {
               )}
             </div>
           </div>
-
-          <div>
-            <WalletInput
-              numberValue={userMoney}
-              handleNumberChange={handleNumberChange}
-              handleSubmit={handleSubmit}
-            />
+  
+          <div className="flex flex-col md:flex-row w-full">
+            <div className="md:w-1/2 mb-"> {/* Adjusted margin bottom */}
+              <WalletInput
+                numberValue={userMoney}
+                handleNumberChange={handleNumberChange}
+                handleSubmit={handleSubmit}
+              />
+            </div>
+  
+            <div className="md:w-1/2 mb-2"> {/* Adjusted margin bottom */}
+              <StocksDiv />
+            </div>
           </div>
         </div>
       </div>
     </div>
   );
-};
+};  
 
-export default withAuthenticationRequired(Profile);
+export default withAuthenticationRequired(Profile, {
+  onRedirecting: () => <h2 className="text-xl font-semibold mb-6">Cargando...</h2>,
+});
