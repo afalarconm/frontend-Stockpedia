@@ -1,91 +1,77 @@
-import React, { useState, useEffect } from 'react';
+// Import statements
+import React, { useState } from 'react';
 import { useAuth0, withAuthenticationRequired } from '@auth0/auth0-react';
-import 'tailwindcss/tailwind.css';
+import axios from 'axios';
+
 import Barra from '../components/navbar';
-import axios from "axios";
+import WalletInput from '../components/WalletInput';
+import StocksDiv from '../components/StocksDiv';
 
-
-const WalletInput = ({ numberValue, handleNumberChange, handleSubmit }) => {
-  return (
-    <div className="bg-white shadow-md rounded-lg py-5 m-6 w-3/4">
-      <div className="flex flex-col items-center">
-        <label htmlFor="numberInput" className="mb-4 text-l font-semibold">
-          Agregar dinero a mi billetera:
-        </label>
-        <input
-          type="number"
-          id="numberInput"
-          placeholder="$asdasd"
-          value={numberValue}
-          onChange={handleNumberChange}
-          className="border border-gray-300 rounded-lg px-4 py-2 mb-4"
-        />
-        <button
-          onClick={handleSubmit}
-          className="bg-green-500 hover:bg-green-600 text-white font-medium rounded-lg text-lg px-4 py-2 focus:ring-4 focus:outline-none focus:ring-green-300 mt-1 mb-2"
-        >
-          Agregar
-        </button>
-      </div>
-    </div>
-  );
-};
-
-const StocksDiv = () => {
-  // Assume the user's stocks are stored in userStocks array
-  const userStocks = ['AAPL', 'GOOGL', 'AMZN']; // Replace with actual user's stocks
-
-  return (
-    <div className="bg-white shadow-md rounded-lg py-5 m-6 w-3/4">
-      <div className="flex flex-col items-center">
-      <h2 className="text-xl font-semibold mb-4">Tus Acciones</h2>
-      <ul>
-        {userStocks.map((stock, index) => (
-          <li key={index}>{stock}</li>
-        ))}
-      </ul>
-    </div>
-    </div>
-  );
-};
-
-export const Profile = () => {
-  const { user, getAccessTokenSilently  } = useAuth0();
+const Profile = () => {
+  // Auth0 and state variables
+  const { user, getAccessTokenSilently } = useAuth0();
   const [userMoney, setUserMoney] = useState(100); // Set initial value to 100
-  const [accessToken, setAccessToken] = useState(null);
 
-
-  const updateUserMoneyOnServer = async (aumento) => {
-    const domain = "dev-p1hsd7pae7fdnccq.us.auth0.com"; 
-    const apiUrl = "https://your-api-endpoint";  // Cambiar por API endpoint
-
+  // Fetch user money from the server
+  const getUserMoney = async () => {
     try {
+      const domain = 'dev-p1hsd7pae7fdnccq.us.auth0.com';
+      const apiUrl = 'https://api.stockpedia.me/user-money'; // Replace with your API endpoint
+  
       const token = await getAccessTokenSilently({
         audience: `https://${domain}/api/v2/`,
-        scope: "read:current_user",
+        scope: 'read:current_user',
       });
-
-      setAccessToken(token);  // Setiar the access token
-
-      const response = await axios.post(apiUrl, { aumento }, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        }
-      });
-
-      console.log("Response from the server:", response.data);
+  
+      const headers = {
+        Authorization: `Bearer ${token}`,
+      };
+  
+      const response = await axios.get(apiUrl, { headers });
+      // Set user money to the value returned by the server
+      setUserMoney(response.data.money);
     } catch (error) {
-      console.error("Error updating money on the server:", error);
+      console.error(error);
     }
   };
 
 
 
+  // Function to update user money on the server
+  const updateUserMoneyOnServer = async (aumento) => {
+    try {
+      const domain = 'dev-p1hsd7pae7fdnccq.us.auth0.com';
+      const apiUrl = 'https://api.stockpedia.me/my-wallet/deposit'; // Replace with your API endpoint
+
+      const token = await getAccessTokenSilently({
+        audience: `https://${domain}/api/v2/`,
+        scope: 'read:current_user',
+      });
+
+      const headers = {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      };
+
+      const response = await axios.post(apiUrl, { aumento }, { headers });
+
+      console.log('Response from the server:', response.data);
+
+      // fetch user money
+      getUserMoney();
+
+    } catch (error) {
+      console.error('Error updating money on the server:', error);
+    }
+  };
+
+
+  // Function to handle input change
   const handleNumberChange = (event) => {
     setUserMoney(parseInt(event.target.value, 10));
   };
 
+  // Function to handle form submission
   const handleSubmit = () => {
     console.log('Added money:', userMoney);
     updateUserMoneyOnServer(userMoney);
@@ -98,11 +84,11 @@ export const Profile = () => {
         <div className="flex flex-col items-center w-1/2 p-7">
           <div className="bg-white border border-gray-200 rounded-lg shadow-md p-8 w-3/4">
             <h2 className="text-xl font-semibold mb-6">Informacion Perfil</h2>
-  
+
             <div className="flex justify-center mb-6">
               <img src={user.picture} alt={user.name} className="rounded-full" />
             </div>
-  
+
             <div className="mb-6">
               {user.name === user.email ? (
                 <>
@@ -117,7 +103,7 @@ export const Profile = () => {
               )}
             </div>
           </div>
-  
+
           <div className="flex flex-col md:flex-row w-full">
             <div className="md:w-1/2 ml-6"> {/* Adjusted margin bottom */}
               <WalletInput
@@ -126,7 +112,7 @@ export const Profile = () => {
                 handleSubmit={handleSubmit}
               />
             </div>
-  
+
             <div className="md:w-1/2 mr-5 mb-2"> {/* Adjusted margin bottom */}
               <StocksDiv />
             </div>
@@ -135,10 +121,13 @@ export const Profile = () => {
       </div>
     </div>
   );
-};  
+};
 
+// Export Profile component with authentication
 export default withAuthenticationRequired(Profile, {
-  onRedirecting: () => <h2 className="text-xl font-semibold mb-6 flex justify-center items-center h-screen">
-  Cargando...
-</h2>,
+  onRedirecting: () => (
+    <h2 className="text-xl font-semibold mb-6 flex justify-center items-center h-screen">
+      Cargando...
+    </h2>
+  ),
 });

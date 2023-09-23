@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import 'tailwindcss/tailwind.css';
 import { useAuth0 } from "@auth0/auth0-react";
+import axios from 'axios';
+
+const INTERVAL_DURATION = 60000; // Set the interval duration in milliseconds (e.g., 1 minute)
 
 const LoginButton = () => {
   const { loginWithRedirect } = useAuth0();
 
   return (
-    <button onClick={() => loginWithRedirect()} className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center mr-3 md:mr-0 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+    <button onClick={() => loginWithRedirect()} className="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
       Empezar a tradear
     </button>
   );
@@ -16,27 +19,54 @@ const LogoutButton = () => {
   const { logout } = useAuth0();
 
   return (
-    <button onClick={() => logout({ returnTo: window.location.origin })} className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center mr-3 md:mr-0 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+    <button onClick={() => logout({ returnTo: window.location.origin })} className="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
       Log Out
     </button>
   );
 };
 
+const getCurrentUserMoney = async (getAccessTokenSilently) => {
+  try {
+    const domain = 'dev-p1hsd7pae7fdnccq.us.auth0.com';
+    const apiUrl = 'https://api.stockpedia.me/user-money'; // Replace with your API endpoint
 
+    const token = await getAccessTokenSilently({
+      audience: `https://${domain}/api/v2/`,
+      scope: 'read:current_user',
+    });
 
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
 
-function Barra() {
+    const response = await axios.get(apiUrl, { headers });
+
+    return response.data.money;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
+
+const Barra = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { user, isAuthenticated, isLoading } = useAuth0();
+  const { getAccessTokenSilently, isAuthenticated, isLoading } = useAuth0();
   const [walletBalance, setWalletBalance] = useState(5000);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setWalletBalance(prevBalance => prevBalance + Math.random() * 100);
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, []);
+    const fetchUserMoneyPeriodically = async () => {
+      const updatedUserMoney = await getCurrentUserMoney(getAccessTokenSilently);
+  
+      if (updatedUserMoney !== null) {
+        setWalletBalance(updatedUserMoney);
+      }
+  
+      setTimeout(fetchUserMoneyPeriodically, INTERVAL_DURATION);
+    };
+  
+    fetchUserMoneyPeriodically();
+  }, [getAccessTokenSilently]); // Include dependencies in the dependency array
+  
 
   if (isLoading) {
     return (
