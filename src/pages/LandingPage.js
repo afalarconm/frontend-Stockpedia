@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import 'tailwindcss/tailwind.css';
 
 import Barra from '../components/navbar';
 
+const API_URL = 'https://api.stockpedia.me/stocks/';
+
+
 const LandingPage = () => {
     const [selectedStock, setSelectedStock] = useState(null);
+    const [tableData, setTableData] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -19,39 +24,33 @@ const LandingPage = () => {
         setSelectedStock(symbol);
     };
 
-    // Mockup data for the table
-    const tableData = [
-        {
-            symbol: 'AAPL',
-            companyName: 'Apple Inc.',
-            currentPrice: 150.25,
-            change: '+2.50 (1.68%)',
-        },
-        {
-            symbol: 'GOOGL',
-            companyName: 'Alphabet Inc.',
-            currentPrice: 2700.75,
-            change: '-5.25 (-0.19%)',
-        },
-        {
-            symbol: 'MSFT',
-            companyName: 'Microsoft Corporation',
-            currentPrice: 280.50,
-            change: '+1.25 (0.45%)',
-        },
-        {
-            symbol: 'AMZN',
-            companyName: 'Amazon.com, Inc.',
-            currentPrice: 3200.00,
-            change: '-2.50 (-0.08%)',
-        },
-        {
-            symbol: 'TSLA',
-            companyName: 'Tesla, Inc.',
-            currentPrice: 750.00,
-            change: '+10.00 (1.33%)',
-        },
-    ];
+    // Get the stock table data from the API
+    useEffect(() => {
+        const fetchStockData = async () => {
+            try {
+                const response = await axios.get(API_URL);
+                const formattedData = response.data.map(item => ({
+                    symbol: item.symbol,
+                    companyName: item.shortname,
+                    currentPrice: item.price,
+                    currency: item.currency,
+                    source: item.source,
+                    datetime: item.datetime,
+                }));
+                setTableData(formattedData);
+            } catch (error) {
+                console.error('Error fetching stock data:', error);
+            }
+        };
+
+        if (typeof window !== 'undefined') {
+            fetchStockData();
+        }
+    }, []);
+
+    
+
+
 
     return (
         <div className="min-h-screen bg-blue-100">
@@ -70,7 +69,8 @@ const LandingPage = () => {
                                     <th className="py-2 px-4 border">Symbol</th>
                                     <th className="py-2 px-4 border">Company Name</th>
                                     <th className="py-2 px-4 border">Current Price</th>
-                                    <th className="py-2 px-4 border">Change</th>
+                                    <th className="py-2 px-4 border">Currency</th>
+                                    <th className="py-2 px-4 border">Market</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -85,7 +85,8 @@ const LandingPage = () => {
                                         <td className="py-2 px-4 border">{stock.symbol}</td>
                                         <td className="py-2 px-4 border">{stock.companyName}</td>
                                         <td className="py-2 px-4 border">{stock.currentPrice}</td>
-                                        <td className="py-2 px-4 border">{stock.change}</td>
+                                        <td className="py-2 px-4 border">{stock.currency}</td>
+                                        <td className="py-2 px-4 border">{stock.source}</td>
                                     </tr>
                                 ))}
                             </tbody>
