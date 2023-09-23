@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useAuth0, withAuthenticationRequired } from '@auth0/auth0-react';
 import 'tailwindcss/tailwind.css';
 import Barra from '../components/navbar';
+import axios from "axios";
+
 
 const WalletInput = ({ numberValue, handleNumberChange, handleSubmit }) => {
   return (
@@ -46,13 +48,37 @@ const StocksDiv = () => {
 };
 
 export const Profile = () => {
-  const { user } = useAuth0();
+  const { user, getAccessTokenSilently  } = useAuth0();
   const [userMoney, setUserMoney] = useState(100); // Set initial value to 100
+  const [accessToken, setAccessToken] = useState(null);
 
-  const updateUserMoneyOnServer = (money) => {
-    // Simulated server update
-    console.log('Sending request to update money on server:', money);
+
+  const updateUserMoneyOnServer = async (aumento) => {
+    const domain = "dev-p1hsd7pae7fdnccq.us.auth0.com"; 
+    const apiUrl = "https://your-api-endpoint";  // Cambiar por API endpoint
+
+    try {
+      const token = await getAccessTokenSilently({
+        audience: `https://${domain}/api/v2/`,
+        scope: "read:current_user",
+      });
+
+      setAccessToken(token);  // Setiar the access token
+
+      const response = await axios.post(apiUrl, { aumento }, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        }
+      });
+
+      console.log("Response from the server:", response.data);
+    } catch (error) {
+      console.error("Error updating money on the server:", error);
+    }
   };
+
+
 
   const handleNumberChange = (event) => {
     setUserMoney(parseInt(event.target.value, 10));
