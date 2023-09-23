@@ -9,10 +9,11 @@ const API_URL = 'https://api.stockpedia.me/stocks/';
 
 const StockDetailsPage = () => {
     const [stockData, setStockData] = useState(null);
-    const { isAuthenticated } = useAuth0();
+    const { isAuthenticated, getAccessTokenSilently } = useAuth0();
     const location = useLocation();
     const { state: { selectedStock } } = location;
     const [selectedStockPrices, setSelectedStockPrices] = useState([]);
+    const [accessToken, setAccessToken] = useState(null);
 
     useEffect(() => {
         const fetchStockData = async () => {
@@ -41,13 +42,37 @@ const StockDetailsPage = () => {
             companyName: data[0].shortname,
             currentPrice: pricesArray[pricesArray.length - 1].y,
             market: data[0].source,
-            change: pricesArray[pricesArray.length - 1].y - pricesArray[0].y
+            change: pricesArray[pricesArray.length - 1].y - pricesArray[0].y,
+            symbol: data[0].symbol
         });
     };
 
-    const handleBuyStock = (event) => {
+    const handleBuyStock = async (event) => {
         event.preventDefault();
-        console.log('Stock purchase logic goes here');
+        const quantity = event.target.elements.quantity.value;
+        console.log('Quantity to buy:', quantity);
+        const domain = "dev-p1hsd7pae7fdnccq.us.auth0.com";
+        const apiUrl = "https://your-api-endpoint";  // Replace with your API endpoint
+
+        try {
+            const token = await getAccessTokenSilently({
+                audience: `https://${domain}/api/v2/`,
+                scope: "read:current_user",
+            });
+
+            setAccessToken(token);  // Set the access token
+
+            const response = await axios.post(apiUrl, { symbol: stockData.symbol, quantity, currentPrice: stockData.currentPrice }, {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                }
+            });
+
+            console.log("Response from the server:", response.data);
+        } catch (error) {
+            console.error("Error buying stocks:", error);
+        }
     };
 
     return (
