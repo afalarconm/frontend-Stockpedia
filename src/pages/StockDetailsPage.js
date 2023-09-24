@@ -14,8 +14,20 @@ const StockDetailsPage = () => {
     const location = useLocation();
     const { state: { selectedStock } } = location;
     const [selectedStockPrices, setSelectedStockPrices] = useState([]);
+    const [ip, setIp] = useState(null);
+    const [quantity, setQuantity] = useState('');
 
     useEffect(() => {
+        const fetchIp = async () => {
+            try {
+                const response = await fetch('https://api.ipify.org/?format=json');
+                const data = await response.json();
+                setIp(data.ip);
+            } catch (error) {
+                console.error('Error fetching IP:', error);
+            }
+        };
+
         const fetchStockData = async () => {
             try {
                 const response = await axios.get(`${API_URL}${selectedStock}`);
@@ -27,6 +39,7 @@ const StockDetailsPage = () => {
 
         if (typeof window !== 'undefined') {
             fetchStockData();
+            fetchIp();
         }
     }, [selectedStock]);
 
@@ -49,15 +62,12 @@ const StockDetailsPage = () => {
 
     const handleBuyStock = async (event) => {
         event.preventDefault();
-        const quantity = event.target.elements.quantity.value;
         console.log('Quantity to buy:', quantity);
         const apiUrl = "https://api.stockpedia.me/stocks/requests";  // Replace with your API endpoint
 
         try {
             const token = await TokenFetcher(getAccessTokenSilently);
-            // Set the access token
-
-            const response = await axios.post(apiUrl, { symbol: stockData.symbol, quantity, currentPrice: stockData.currentPrice }, {
+            const response = await axios.post(apiUrl, { symbol: stockData?.symbol, quantity, currentPrice: stockData?.currentPrice, ip }, {
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
@@ -83,7 +93,6 @@ const StockDetailsPage = () => {
                                 <p>Precio: {stockData.currentPrice}</p>
                                 <p>Market: {stockData.market} </p>
                                 <p>Change: {stockData.change}%</p>
-
                             </div>
                         )}
                     </div>
@@ -98,11 +107,21 @@ const StockDetailsPage = () => {
                                                 <path stroke="currentColor" strokeLinecap="round" strokeWidth="2" d="M1 12c1.5 1.5 5.25 3 9 3s7.5-1.5 9-3m-9-1h.01M2 19h16a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1ZM14 5V3a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v2h8Z"></path>
                                             </svg>
                                         </div>
-                                        <input type="text" id="quantity" className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-8 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="0"></input>
+                                        <input
+                                            type="text"
+                                            id="quantity"
+                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-8 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                            placeholder="0"
+                                            value={quantity}
+                                            onChange={(e) => setQuantity(e.target.value)}
+                                        />
                                     </div>
                                 </div>
                                 <div className="mb-2">
-                                    <button type="submit" class="text-white bg-green-500 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+                                    <button
+                                        type="submit"
+                                        className="text-white bg-green-500 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+                                    >
                                         Comprar
                                     </button>
                                 </div>

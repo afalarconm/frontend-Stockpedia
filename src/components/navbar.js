@@ -37,9 +37,8 @@ const getCurrentUserMoney = async (getAccessTokenSilently) => {
     const headers = {
       Authorization: `Bearer ${token}`,
     };
-
-    console.log('token', token)
     const response = await axios.get(apiUrl, { headers });
+    console.log('User money:', response.data);
 
     return response.data.money;
   } catch (error) {
