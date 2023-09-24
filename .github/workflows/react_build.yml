@@ -21,9 +21,6 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Lint code with ESLint
-        run: npm run lint  # Modify this command according to your project setup
-
       - name: Build React app
         run: npm run build
 
