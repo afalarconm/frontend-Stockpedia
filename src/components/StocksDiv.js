@@ -1,37 +1,37 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import axios from 'axios';
+import { TokenFetcher, generateAuth0Token } from './TokenFetcher';
 
 const StocksDiv = () => {
   const { getAccessTokenSilently } = useAuth0();
   const [userStocks, setUserStocks] = useState([]);
 
+
+
   useEffect(() => {
     const fetchUserStocks = async () => {
       try {
-        const domain = 'dev-p1hsd7pae7fdnccq.us.auth0.com';
-        const apiUrl = 'https://api.stockpedia.me/my-stocks';
-  
-        const token = await getAccessTokenSilently({
-          audience: `https://${domain}/api/v2/`,
-          scope: 'read:current_user',
-        });
-  
+        const token = await generateAuth0Token();
+        console.log('token de generate', token)
+
+        const apiUrl = 'http://api.stockpedia.me/my-stocks';
+
         const response = await axios.get(apiUrl, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-  
+
         setUserStocks(response.data);
       } catch (error) {
         console.error('Error fetching user stocks:', error);
       }
     };
-  
+
     fetchUserStocks();
   }, [getAccessTokenSilently]);
-  
+
 
   return (
     <div className="bg-white shadow-md rounded-lg py-5 m-6 w-3/4">

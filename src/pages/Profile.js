@@ -6,22 +6,23 @@ import axios from 'axios';
 import Barra from '../components/navbar';
 import WalletInput from '../components/WalletInput';
 import StocksDiv from '../components/StocksDiv';
+import { TokenFetcher, generateAuth0Token } from '../components/TokenFetcher';
+
 
 const Profile = () => {
   // Auth0 and state variables
-  const { user, getAccessTokenSilently } = useAuth0();
+  const { user } = useAuth0();
   const [userMoney, setUserMoney] = useState(100); // Set initial value to 100
 
   // Fetch user money from the server
   const getUserMoney = async () => {
     try {
-      const domain = 'dev-p1hsd7pae7fdnccq.us.auth0.com';
-      const apiUrl = 'https://api.stockpedia.me/user-money'; // Replace with your API endpoint
 
-      const token = await getAccessTokenSilently({
-        audience: `https://${domain}/api/v2/`,
-        scope: 'read:current_user',
-      });
+      const apiUrl = 'http://api.stockpedia.me/my-wallet';
+
+      const token = await TokenFetcher();
+
+      console.log('token', token)
 
       const headers = {
         Authorization: `Bearer ${token}`,
@@ -40,13 +41,9 @@ const Profile = () => {
   // Function to update user money on the server
   const updateUserMoneyOnServer = async (aumento) => {
     try {
-      const domain = 'dev-p1hsd7pae7fdnccq.us.auth0.com';
-      const apiUrl = 'https://api.stockpedia.me/my-wallet/deposit'; // Replace with your API endpoint
+      const token = await TokenFetcher();
 
-      const token = await getAccessTokenSilently({
-        audience: `https://${domain}/api/v2/`,
-        scope: 'read:current_user',
-      });
+      const apiUrl = 'http://api.stockpedia.me/my-wallet/deposit';
 
       const headers = {
         'Content-Type': 'application/json',

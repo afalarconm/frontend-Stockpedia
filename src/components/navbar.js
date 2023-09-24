@@ -3,7 +3,10 @@ import 'tailwindcss/tailwind.css';
 import { useAuth0 } from "@auth0/auth0-react";
 import axios from 'axios';
 
+import { TokenFetcher, generateAuth0Token } from './TokenFetcher';
+
 const INTERVAL_DURATION = 60000; // Set the interval duration in milliseconds (e.g., 1 minute)
+
 
 const LoginButton = () => {
   const { loginWithRedirect } = useAuth0();
@@ -25,21 +28,17 @@ const LogoutButton = () => {
   );
 };
 
-const getCurrentUserMoney = async (getAccessTokenSilently) => {
+const getCurrentUserMoney = async ( getAccessTokenSilently ) => {
   try {
-    const domain = 'dev-p1hsd7pae7fdnccq.us.auth0.com';
-    const apiUrl = 'https://api.stockpedia.me/my-wallet';
 
-    const token = await getAccessTokenSilently({
-      audience: `https://${domain}/api/v2/`,
-      scope: 'read:current_user',
-    });
+    const apiUrl = 'http://api.stockpedia.me/my-wallet';
 
+    const token = await TokenFetcher(getAccessTokenSilently);
     const headers = {
       Authorization: `Bearer ${token}`,
     };
 
-    console.log('token', token )
+    console.log('token', token)
     const response = await axios.get(apiUrl, { headers });
 
     return response.data.money;
@@ -57,17 +56,17 @@ const Barra = () => {
   useEffect(() => {
     const fetchUserMoneyPeriodically = async () => {
       const updatedUserMoney = await getCurrentUserMoney(getAccessTokenSilently);
-  
+
       if (updatedUserMoney !== null) {
         setWalletBalance(updatedUserMoney);
       }
-  
+
       setTimeout(fetchUserMoneyPeriodically, INTERVAL_DURATION);
     };
-  
+
     fetchUserMoneyPeriodically();
   }, [getAccessTokenSilently]); // Include dependencies in the dependency array
-  
+
 
   if (isLoading) {
     return (
