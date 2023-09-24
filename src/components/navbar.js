@@ -31,7 +31,7 @@ const LogoutButton = () => {
 const getCurrentUserMoney = async (getAccessTokenSilently) => {
   try {
 
-    const apiUrl = 'http://api.stockpedia.me/my-wallet';
+    const apiUrl = 'https://api.stockpedia.me/my-wallet';
 
     const token = await TokenFetcher(getAccessTokenSilently);
     const headers = {

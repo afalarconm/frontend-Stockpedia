@@ -13,7 +13,7 @@ const StocksDiv = () => {
     const fetchUserStocks = async () => {
       try {
         const token = await TokenFetcher(getAccessTokenSilently);
-        const apiUrl = 'http://api.stockpedia.me/my-stocks';
+        const apiUrl = 'https://api.stockpedia.me/my-stocks';
 
         const response = await axios.get(apiUrl, {
           headers: {

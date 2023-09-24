@@ -18,7 +18,7 @@ const Profile = () => {
   const getUserMoney = async () => {
     try {
 
-      const apiUrl = 'http://api.stockpedia.me/my-wallet';
+      const apiUrl = 'https://api.stockpedia.me/my-wallet';
 
       const token = await TokenFetcher(getAccessTokenSilently);
 
@@ -43,7 +43,7 @@ const Profile = () => {
     try {
       const token = await TokenFetcher(getAccessTokenSilently);
 
-      const apiUrl = 'http://api.stockpedia.me/my-wallet/deposit';
+      const apiUrl = 'https://api.stockpedia.me/my-wallet/deposit';
 
       const headers = {
         'Content-Type': 'application/json',
