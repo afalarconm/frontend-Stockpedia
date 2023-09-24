@@ -28,7 +28,7 @@ const LogoutButton = () => {
 const getCurrentUserMoney = async (getAccessTokenSilently) => {
   try {
     const domain = 'dev-p1hsd7pae7fdnccq.us.auth0.com';
-    const apiUrl = 'https://api.stockpedia.me/user-money'; // Replace with your API endpoint
+    const apiUrl = 'https://api.stockpedia.me/my-wallet';
 
     const token = await getAccessTokenSilently({
       audience: `https://${domain}/api/v2/`,
@@ -39,6 +39,7 @@ const getCurrentUserMoney = async (getAccessTokenSilently) => {
       Authorization: `Bearer ${token}`,
     };
 
+    console.log('token', token )
     const response = await axios.get(apiUrl, { headers });
 
     return response.data.money;

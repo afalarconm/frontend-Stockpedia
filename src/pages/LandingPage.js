@@ -49,9 +49,6 @@ const LandingPage = () => {
     }, []);
 
     
-
-
-
     return (
         <div className="min-h-screen bg-blue-100">
             {/* Navbar */}

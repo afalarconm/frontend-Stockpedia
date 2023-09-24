@@ -17,16 +17,16 @@ const Profile = () => {
     try {
       const domain = 'dev-p1hsd7pae7fdnccq.us.auth0.com';
       const apiUrl = 'https://api.stockpedia.me/user-money'; // Replace with your API endpoint
-  
+
       const token = await getAccessTokenSilently({
         audience: `https://${domain}/api/v2/`,
         scope: 'read:current_user',
       });
-  
+
       const headers = {
         Authorization: `Bearer ${token}`,
       };
-  
+
       const response = await axios.get(apiUrl, { headers });
       // Set user money to the value returned by the server
       setUserMoney(response.data.money);

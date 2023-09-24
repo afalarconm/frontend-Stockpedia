@@ -21,18 +21,20 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Lint code with ESLint
+        run: npm run lint  # Modify this command according to your project setup
+
       - name: Build React app
         run: npm run build
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
+        run: |
+          echo ${{ secrets.AWS_ACCESS_KEY_ID }} >> $HOME/.aws/credentials
+          echo ${{ secrets.AWS_SECRET_ACCESS_KEY }} >> $HOME/.aws/credentials
+          aws configure set region us-east-1
 
       - name: Deploy to AWS S3
-        uses: jakejarvis/s3-sync-action@v0.3.0
+        uses: jakejarvis/s3-sync-action@master
         with:
           args: --acl public-read --follow-symlinks --delete
         env:
