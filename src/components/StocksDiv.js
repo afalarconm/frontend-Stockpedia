@@ -7,8 +7,6 @@ const StocksDiv = () => {
   const { getAccessTokenSilently } = useAuth0();
   const [userStocks, setUserStocks] = useState([]);
 
-
-
   useEffect(() => {
     const fetchUserStocks = async () => {
       try {
@@ -21,6 +19,7 @@ const StocksDiv = () => {
           },
         });
 
+        console.log('User stocks:', response.data);
         setUserStocks(response.data);
       } catch (error) {
         console.error('Error fetching user stocks:', error);
@@ -36,8 +35,13 @@ const StocksDiv = () => {
       <div className="flex flex-col items-center">
         <h2 className="text-xl font-semibold mb-4">Tus Acciones</h2>
         <ul>
-          {userStocks.map((stock, index) => (
-            <li key={index}>{stock}</li>
+          {/* Set up user stocks with symbol and quantity */}
+          {userStocks.map((stock) => (
+            <li key={stock.symbol}>
+              <p className="text-lg font-semibold">
+                {stock.symbol} - {stock.quantity}
+              </p>
+            </li>
           ))}
         </ul>
       </div>
