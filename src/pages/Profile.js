@@ -6,12 +6,12 @@ import axios from 'axios';
 import Barra from '../components/navbar';
 import WalletInput from '../components/WalletInput';
 import StocksDiv from '../components/StocksDiv';
-import { TokenFetcher, generateAuth0Token } from '../components/TokenFetcher';
+import { TokenFetcher } from '../components/TokenFetcher';
 
 
 const Profile = () => {
   // Auth0 and state variables
-  const { user } = useAuth0();
+  const { user, getAccessTokenSilently } = useAuth0();
   const [userMoney, setUserMoney] = useState(100); // Set initial value to 100
 
   // Fetch user money from the server
@@ -20,7 +20,7 @@ const Profile = () => {
 
       const apiUrl = 'http://api.stockpedia.me/my-wallet';
 
-      const token = await TokenFetcher();
+      const token = await TokenFetcher(getAccessTokenSilently);
 
       console.log('token', token)
 
@@ -41,7 +41,7 @@ const Profile = () => {
   // Function to update user money on the server
   const updateUserMoneyOnServer = async (aumento) => {
     try {
-      const token = await TokenFetcher();
+      const token = await TokenFetcher(getAccessTokenSilently);
 
       const apiUrl = 'http://api.stockpedia.me/my-wallet/deposit';
 

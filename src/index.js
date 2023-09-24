@@ -14,7 +14,9 @@ root.render(
       domain="dev-p1hsd7pae7fdnccq.us.auth0.com"
       clientId="CLlKoQTg5nY43McMoFacylzw1yr91Jsj"
       authorizationParams={{
-        redirect_uri: window.location.origin
+        redirect_uri: window.location.origin,
+        audience: "https://stockpedia-api",
+        scope: "read:current_user update:current_user_metadata"
       }}
     >
       <App />

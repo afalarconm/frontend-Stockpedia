@@ -3,7 +3,7 @@ import 'tailwindcss/tailwind.css';
 import { useAuth0 } from "@auth0/auth0-react";
 import axios from 'axios';
 
-import { TokenFetcher, generateAuth0Token } from './TokenFetcher';
+import { TokenFetcher } from './TokenFetcher';
 
 const INTERVAL_DURATION = 60000; // Set the interval duration in milliseconds (e.g., 1 minute)
 
@@ -28,7 +28,7 @@ const LogoutButton = () => {
   );
 };
 
-const getCurrentUserMoney = async ( getAccessTokenSilently ) => {
+const getCurrentUserMoney = async (getAccessTokenSilently) => {
   try {
 
     const apiUrl = 'http://api.stockpedia.me/my-wallet';

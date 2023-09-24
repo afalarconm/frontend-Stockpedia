@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import axios from 'axios';
-import { TokenFetcher, generateAuth0Token } from './TokenFetcher';
+import { TokenFetcher } from './TokenFetcher';
 
 const StocksDiv = () => {
   const { getAccessTokenSilently } = useAuth0();
@@ -12,9 +12,7 @@ const StocksDiv = () => {
   useEffect(() => {
     const fetchUserStocks = async () => {
       try {
-        const token = await generateAuth0Token();
-        console.log('token de generate', token)
-
+        const token = await TokenFetcher(getAccessTokenSilently);
         const apiUrl = 'http://api.stockpedia.me/my-stocks';
 
         const response = await axios.get(apiUrl, {

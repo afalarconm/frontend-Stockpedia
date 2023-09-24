@@ -4,6 +4,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import axios from 'axios';
 import Barra from '../components/navbar';
 import StockChart from '../components/StockChart';
+import { TokenFetcher } from '../components/TokenFetcher';
 
 const API_URL = 'https://api.stockpedia.me/stocks/';
 
@@ -13,7 +14,6 @@ const StockDetailsPage = () => {
     const location = useLocation();
     const { state: { selectedStock } } = location;
     const [selectedStockPrices, setSelectedStockPrices] = useState([]);
-    const [accessToken, setAccessToken] = useState(null);
 
     useEffect(() => {
         const fetchStockData = async () => {
@@ -51,16 +51,11 @@ const StockDetailsPage = () => {
         event.preventDefault();
         const quantity = event.target.elements.quantity.value;
         console.log('Quantity to buy:', quantity);
-        const domain = "dev-p1hsd7pae7fdnccq.us.auth0.com";
-        const apiUrl = "https://your-api-endpoint";  // Replace with your API endpoint
+        const apiUrl = "https://api.stockpedia.me/stocks/requests";  // Replace with your API endpoint
 
         try {
-            const token = await getAccessTokenSilently({
-                audience: `https://${domain}/api/v2/`,
-                scope: "read:current_user",
-            });
-
-            setAccessToken(token);  // Set the access token
+            const token = await TokenFetcher(getAccessTokenSilently);
+            // Set the access token
 
             const response = await axios.post(apiUrl, { symbol: stockData.symbol, quantity, currentPrice: stockData.currentPrice }, {
                 headers: {
