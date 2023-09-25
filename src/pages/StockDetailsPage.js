@@ -67,7 +67,7 @@ const StockDetailsPage = () => {
 
         try {
             const token = await TokenFetcher(getAccessTokenSilently);
-            const response = await axios.post(apiUrl, { symbol: stockData?.symbol, quantity, currentPrice: stockData?.currentPrice, ip }, {
+            const response = await axios.post(apiUrl, { symbol: stockData?.symbol, quantity: quantity, ip: ip }, {
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
@@ -81,7 +81,7 @@ const StockDetailsPage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-blue-100">
+        <div className="min-h-screen bg-blue-100 ">
             <Barra />
             <div className="flex justify-center">
                 <div className="w-1/4 p-8">
@@ -138,6 +138,15 @@ const StockDetailsPage = () => {
                     </div>
                 </div>
             </div>
+            <div className="flex justify-center mb-8">
+                <button
+                    onClick={() => window.history.back()}
+                    className="text-white bg-blue-500 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                >
+                    Volver
+                </button>
+            </div>
+
         </div>
     );
 };

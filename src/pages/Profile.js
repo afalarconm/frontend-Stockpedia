@@ -50,7 +50,7 @@ const Profile = () => {
         Authorization: `Bearer ${token}`,
       };
 
-      const response = await axios.post(apiUrl, { aumento }, { headers });
+      const response = await axios.post(apiUrl, { amount: aumento }, { headers });
 
       console.log('Response from the server:', response.data);
 
@@ -86,11 +86,10 @@ const Profile = () => {
               <img src={user.picture} alt={user.name} className="rounded-full" />
             </div>
 
-            <div className="mb-6">
+            <div className="mb-6 items-center">
               {user.name === user.email ? (
                 <>
                   <p className="text-gray-500">Correo: {user.email}</p>
-                  <p className="text-gray-500">Dinero: ${userMoney}</p>
                 </>
               ) : (
                 <>
@@ -98,6 +97,11 @@ const Profile = () => {
                   <p className="text-gray-500">Correo: {user.email}</p>
                 </>
               )}
+            </div>
+            <div className='mx-auto items-center'>
+              <button className="text-white bg-blue-500 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                <a href="/transactions">Mis transaciones</a>
+              </button>
             </div>
           </div>
 
@@ -115,6 +119,15 @@ const Profile = () => {
             </div>
           </div>
         </div>
+
+      </div>
+      <div className="flex justify-center mb-8">
+        <button
+          onClick={() => window.history.back()}
+          className="text-white bg-blue-500 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+        >
+          Volver
+        </button>
       </div>
     </div>
   );

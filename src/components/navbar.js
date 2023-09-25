@@ -5,7 +5,7 @@ import axios from 'axios';
 
 import { TokenFetcher } from './TokenFetcher';
 
-const INTERVAL_DURATION = 60000; // Set the interval duration in milliseconds (e.g., 1 minute)
+const INTERVAL_DURATION = 10000; 
 
 
 const LoginButton = () => {
@@ -40,7 +40,7 @@ const getCurrentUserMoney = async (getAccessTokenSilently) => {
     const response = await axios.get(apiUrl, { headers });
     console.log('User money:', response.data);
 
-    return response.data.money;
+    return response.data[0].wallet;
   } catch (error) {
     console.error(error);
     return null;
@@ -50,7 +50,7 @@ const getCurrentUserMoney = async (getAccessTokenSilently) => {
 const Barra = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { getAccessTokenSilently, isAuthenticated, isLoading } = useAuth0();
-  const [walletBalance, setWalletBalance] = useState(5000);
+  const [walletBalance, setWalletBalance] = useState(null);
 
   useEffect(() => {
     const fetchUserMoneyPeriodically = async () => {
