@@ -1,5 +1,5 @@
 // Import statements
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth0, withAuthenticationRequired } from '@auth0/auth0-react';
 import axios from 'axios';
 
@@ -12,29 +12,36 @@ import { TokenFetcher } from '../components/TokenFetcher';
 const Profile = () => {
   // Auth0 and state variables
   const { user, getAccessTokenSilently } = useAuth0();
-  const [userMoney, setUserMoney] = useState(100); // Set initial value to 100
+  const [userMoney, setUserMoney] = useState(0);
+  const [addedMoney, setUserAddedMoney] = useState('');
 
-  // Fetch user money from the server
-  const getUserMoney = async () => {
+  // On window load, fetch user money
+  useEffect(() => {
+    getUserMoney(getAccessTokenSilently);
+  }
+    , [getAccessTokenSilently]);
+
+  // Function to fetch user money
+  const getUserMoney = async (getAccessTokenSilently) => {
     try {
-
-      const apiUrl = 'https://api.stockpedia.me/my-wallet';
-
       const token = await TokenFetcher(getAccessTokenSilently);
 
-      console.log('token', token)
+      const apiUrl = 'https://api.stockpedia.me/my-wallet';
 
       const headers = {
         Authorization: `Bearer ${token}`,
       };
 
       const response = await axios.get(apiUrl, { headers });
-      // Set user money to the value returned by the server
-      setUserMoney(response.data.money);
+
+      console.log('Response from the server:', response.data);
+
+      setUserMoney(response.data[0].wallet);
+
     } catch (error) {
-      console.error(error);
+      console.error('Error fetching user money:', error);
     }
-  };
+  }
 
   // Function to update user money on the server
   const updateUserMoneyOnServer = async (aumento) => {
@@ -63,15 +70,15 @@ const Profile = () => {
 
   // Function to handle input change
   const handleNumberChange = (event) => {
-    setUserMoney(parseInt(event.target.value, 10));
+    setUserAddedMoney(parseInt(event.target.value, 10));
   };
 
   // Function to handle form submission
   const handleSubmit = () => {
-    console.log('Added money:', userMoney);
-    updateUserMoneyOnServer(userMoney);
+    console.log('Added money:', addedMoney);
+    updateUserMoneyOnServer(addedMoney);
     alert('Dinero agregado a tu billetera!');
-    window.location.href = '/';
+    window.location.href = '/profile';
   };
 
   return (
@@ -90,6 +97,8 @@ const Profile = () => {
               {user.name === user.email ? (
                 <>
                   <p className="text-gray-500">Correo: {user.email}</p>
+                  <p className="text-lg font-semibold">Dinero: ${userMoney}</p>
+                  {/* Display the logged users money */}
                 </>
               ) : (
                 <>
@@ -108,7 +117,7 @@ const Profile = () => {
           <div className="flex flex-col md:flex-row w-full">
             <div className="md:w-1/2 ml-9"> {/* Adjusted margin bottom */}
               <WalletInput
-                numberValue={userMoney}
+                numberValue={addedMoney}
                 handleNumberChange={handleNumberChange}
                 handleSubmit={handleSubmit}
               />

@@ -10,7 +10,7 @@ const WalletInput = ({ numberValue, handleNumberChange, handleSubmit }) => {
         <input
           type="number"
           id="numberInput"
-          placeholder="$asdasd"
+          placeholder="$0000"
           value={numberValue}
           onChange={handleNumberChange}
           className="border border-gray-300 rounded-lg px-4 py-2 mb-4"

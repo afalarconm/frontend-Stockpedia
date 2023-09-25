@@ -1,7 +1,10 @@
-name: Build and Deploy React App to AWS
+name: Build, Lint, and Deploy React App to AWS
 
 on:
   push:
+    branches:
+      - main
+  pull_request:
     branches:
       - main
 
@@ -16,13 +19,24 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 14.19.1
+          node-version: '16'
+          check-latest: true
 
       - name: Install dependencies
         run: npm install
 
+      - name: Lint with ESLint
+        run: npm run lint 
+
       - name: Build React app
         run: npm run build
+
+      - name: Install a compatible Lighthouse version
+        run: npm install -g lighthouse@8.5.0
+
+      - name: Run Lighthouse performance review
+        run: |
+          lighthouse https://stockpedia.me/ --quiet --chrome-flags="--headless" --output html --output json --output-path ./lighthouse-report.html
 
       - name: Deploy to AWS S3
         uses: jakejarvis/s3-sync-action@master
