@@ -27,7 +27,7 @@ jobs:
       - name: Deploy to AWS S3
         uses: jakejarvis/s3-sync-action@master
         with:
-          args: --follow-symlinks --delete
+          args: --follow-symlinks
         env:
           AWS_S3_BUCKET: grupo27-bucket
           SOURCE_DIR: ./build
