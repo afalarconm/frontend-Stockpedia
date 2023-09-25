@@ -26,9 +26,8 @@ jobs:
 
       - name: Configure AWS credentials
         run: |
-          echo ${{ secrets.AWS_ACCESS_KEY_ID }} >> $HOME/.aws/credentials
-          echo ${{ secrets.AWS_SECRET_ACCESS_KEY }} >> $HOME/.aws/credentials
-          aws configure set region us-east-1
+          mkdir -p $HOME/.aws
+          echo -e "[default]\naws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}\naws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" > $HOME/.aws/credentials
 
       - name: Deploy to AWS S3
         uses: jakejarvis/s3-sync-action@master
