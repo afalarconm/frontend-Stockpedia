@@ -5,9 +5,6 @@ import axios from 'axios';
 
 import { TokenFetcher } from './TokenFetcher';
 
-const INTERVAL_DURATION = 10000;
-
-
 const LoginButton = () => {
   const { loginWithRedirect } = useAuth0();
 
@@ -61,10 +58,9 @@ const Barra = () => {
           // El usuario no está autenticado o la autenticación aún está en curso, no hagas nada
           return;
         }
-        const updatedUserMoney = null;
-        if (isAuthenticated){
-          updatedUserMoney = await getCurrentUserMoney(getAccessTokenSilently);
-        }
+
+        const updatedUserMoney = isAuthenticated ? await getCurrentUserMoney(getAccessTokenSilently) : null;
+
 
         if (updatedUserMoney !== null) {
           setWalletBalance(updatedUserMoney);
