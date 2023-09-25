@@ -53,18 +53,32 @@ const Barra = () => {
   const [walletBalance, setWalletBalance] = useState(null);
 
   useEffect(() => {
-    const fetchUserMoneyPeriodically = async () => {
-      const updatedUserMoney = await getCurrentUserMoney(getAccessTokenSilently);
+    const INTERVAL_DURATION = 60000; // Tiempo en milisegundos
 
-      if (updatedUserMoney !== null) {
-        setWalletBalance(updatedUserMoney);
+    const fetchUserMoneyPeriodically = async () => {
+      try {
+        if (!isAuthenticated || isLoading) {
+          // El usuario no está autenticado o la autenticación aún está en curso, no hagas nada
+          return;
+        }
+
+        const updatedUserMoney = await getCurrentUserMoney(getAccessTokenSilently);
+
+        if (updatedUserMoney !== null) {
+          setWalletBalance(updatedUserMoney);
+        }
+      } catch (error) {
+        // Maneja errores de autenticación u otros errores aquí
+        console.error('Error al obtener el saldo de la billetera:', error);
       }
 
       setTimeout(fetchUserMoneyPeriodically, INTERVAL_DURATION);
     };
 
-    fetchUserMoneyPeriodically();
-  }, [getAccessTokenSilently]); // Include dependencies in the dependency array
+    if (isAuthenticated) {
+      fetchUserMoneyPeriodically();
+    }
+  }, [getAccessTokenSilently, isAuthenticated, isLoading]);
 
 
   if (isLoading) {
