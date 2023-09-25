@@ -75,7 +75,7 @@ const Barra = () => {
             <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Emoji_u1f310.svg/192px-Emoji_u1f310.svg.png" className="h-8 mr-3" alt="Stockpedia Logo" />
             <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Stockpedia</span>
           </a>
-          <a href="#" className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Loading ...</a>
+          <a href="https://stockpedia.me" className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Loading ...</a>
         </div>
       </nav>
     );
