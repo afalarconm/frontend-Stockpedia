@@ -30,7 +30,7 @@ const TransactionTable = () => {
         if (typeof window !== 'undefined') {
             fetchTransactions();
         }
-    }, []);
+    }, [getAccessTokenSilently]);
 
     if (!isAuthenticated) {
         return <div>Log in to see your transactions</div>;
