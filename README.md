@@ -84,7 +84,7 @@ Los pasos necesarios para replicar el pipe CI que usamos son:
 * **RNF09: (8p) :white_check_mark:** Deben implementar un pipeline de CI. Como proveedores aceptados están CircleCI, Github Actions y AWS codebuild. Recomendamos los dos primeros porque los ayudantes tienen experiencia en estos dos. Esta implementación debe correr un linter que revise su código.
 
 - * **Bonus: de 3 puntos** :white_check_mark: Implementar un build simple que resuelva un test trivial que pueda fallar solo para el backend (tipo assert false o similar).
-- * **Bonus: de 3 puntos** :x: Implementar un pipeline CI para su frontend que revise con un linter su aplicación y haga uso de revisiones de performance de lighthouse.
+- * **Bonus: de 3 puntos** ✅: Implementar un pipeline CI para su frontend que revise con un linter su aplicación y haga uso de revisiones de performance de lighthouse.
 
 ### Documentación (6p)
 
