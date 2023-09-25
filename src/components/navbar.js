@@ -1,9 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import 'tailwindcss/tailwind.css';
 import { useAuth0 } from "@auth0/auth0-react";
-import axios from 'axios';
-
-import { TokenFetcher } from './TokenFetcher';
 
 const LoginButton = () => {
   const { loginWithRedirect } = useAuth0();
@@ -25,55 +22,54 @@ const LogoutButton = () => {
   );
 };
 
-const getCurrentUserMoney = async (getAccessTokenSilently) => {
-  try {
+// const getCurrentUserMoney = async (getAccessTokenSilently) => {
+//   try {
 
-    const apiUrl = 'https://api.stockpedia.me/my-wallet';
+//     const apiUrl = 'https://api.stockpedia.me/my-wallet';
 
-    const token = await TokenFetcher(getAccessTokenSilently);
-    const headers = {
-      Authorization: `Bearer ${token}`,
-    };
-    const response = await axios.get(apiUrl, { headers });
+//     const token = await TokenFetcher(getAccessTokenSilently);
+//     const headers = {
+//       Authorization: `Bearer ${token}`,
+//     };
+//     const response = await axios.get(apiUrl, { headers });
 
-    return response.data[0].wallet;
-  } catch (error) {
-    console.error(error);
-    return null;
-  }
-};
+//     return response.data[0].wallet;
+//   } catch (error) {
+//     console.error(error);
+//     return null;
+//   }
+// };
 
 const Barra = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { getAccessTokenSilently, isAuthenticated, isLoading } = useAuth0();
-  const [walletBalance, setWalletBalance] = useState(null);
+  const { isAuthenticated, isLoading } = useAuth0();
 
-  useEffect(() => {
-    const INTERVAL_DURATION = 60000; // Tiempo en milisegundos
+  // useEffect(() => {
+  //   const INTERVAL_DURATION = 60000; // Tiempo en milisegundos
 
-    const fetchUserMoneyPeriodically = async () => {
-      try {
-        if (!isAuthenticated || isLoading) {
-          // El usuario no está autenticado o la autenticación aún está en curso, no hagas nada
-          return;
-        }
+  //   const fetchUserMoneyPeriodically = async () => {
+  //     try {
+  //       if (!isAuthenticated || isLoading) {
+  //         // El usuario no está autenticado o la autenticación aún está en curso, no hagas nada
+  //         return;
+  //       }
 
-        const updatedUserMoney = isAuthenticated ? await getCurrentUserMoney(getAccessTokenSilently) : null;
+  //       const updatedUserMoney = isAuthenticated ? await getCurrentUserMoney(getAccessTokenSilently) : null;
 
-        if (updatedUserMoney !== null) {
-          setWalletBalance(updatedUserMoney);
-        }
-      } catch (error) {
-        console.error('Error al obtener el saldo de la billetera:', error);
-      }
+  //       if (updatedUserMoney !== null) {
+  //         setWalletBalance(updatedUserMoney);
+  //       }
+  //     } catch (error) {
+  //       console.error('Error al obtener el saldo de la billetera:', error);
+  //     }
 
-      setTimeout(fetchUserMoneyPeriodically, INTERVAL_DURATION);
-    };
+  //     setTimeout(fetchUserMoneyPeriodically, INTERVAL_DURATION);
+  //   };
 
-    if (isAuthenticated) {
-      fetchUserMoneyPeriodically();
-    }
-  }, [getAccessTokenSilently, isAuthenticated, isLoading]);
+  //   if (isAuthenticated) {
+  //     fetchUserMoneyPeriodically();
+  //   }
+  // }, [getAccessTokenSilently, isAuthenticated, isLoading]);
 
 
   if (isLoading) {
@@ -108,11 +104,11 @@ const Barra = () => {
           </button>
         </div>
 
-        {isAuthenticated && (
+        {/* {isAuthenticated && (
           <div className=" text-white rounded-lg px-4 py-2 flex justify-between items-center">
             <p className="font-bold text-green-500">Mi Billetera: ${Math.round(walletBalance)}</p>
           </div>
-        )}
+        )} */}
 
         <div className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-cta">
           <div className={`items-center justify-between ${isOpen ? 'flex' : 'hidden'} w-full md:flex md:w-auto md:order-1`} id="navbar-cta">
