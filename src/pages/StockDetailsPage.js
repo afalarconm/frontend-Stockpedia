@@ -60,6 +60,20 @@ const StockDetailsPage = () => {
         });
     };
 
+    const displayAlert = (response) => {
+        console.log('Response from the server:', response);
+        // If server response is "OK" display a success alert, otherwise display an error alert
+        if (response.data === "OK") {
+            // alert the user and redirect to the profile page
+            alert('Compraste Stocks!');
+            window.location.href = '/profile';
+
+        } else {
+            alert('Error buying stocks. Please try again later.');
+            window.location.href = '/';
+        }
+    };
+
     const handleBuyStock = async (event) => {
         event.preventDefault();
         console.log('Quantity to buy:', quantity);
@@ -75,8 +89,10 @@ const StockDetailsPage = () => {
             });
 
             console.log("Response from the server:", response.data);
+            displayAlert(response); // Call the displayAlert function with the server response
         } catch (error) {
             console.error("Error buying stocks:", error);
+            alert('Error buying stocks. Please try again later.'); // Display a generic error message
         }
     };
 

@@ -36,8 +36,6 @@ const Profile = () => {
     }
   };
 
-
-
   // Function to update user money on the server
   const updateUserMoneyOnServer = async (aumento) => {
     try {
@@ -72,21 +70,23 @@ const Profile = () => {
   const handleSubmit = () => {
     console.log('Added money:', userMoney);
     updateUserMoneyOnServer(userMoney);
+    alert('Dinero agregado a tu billetera!');
+    window.location.href = '/';
   };
 
   return (
     <div className="min-h-screen bg-blue-100">
       <Barra />
-      <div className="flex-1 flex justify-center p-2">
-        <div className="flex flex-col items-center w-1/2 p-7">
-          <div className="bg-white border border-gray-200 rounded-lg shadow-md p-8 w-3/4">
+      <div className="flex-1 flex justify-center">
+        <div className="flex flex-col items-center w-1/2 p-2">
+          <div className="bg-white border border-gray-200 rounded-lg shadow-md p-3 w-3/4">
             <h2 className="text-xl font-semibold mb-6">Informacion Perfil</h2>
 
             <div className="flex justify-center mb-6">
               <img src={user.picture} alt={user.name} className="rounded-full" />
             </div>
 
-            <div className="mb-6 items-center">
+            <div className="p-2 items-center">
               {user.name === user.email ? (
                 <>
                   <p className="text-gray-500">Correo: {user.email}</p>
@@ -106,7 +106,7 @@ const Profile = () => {
           </div>
 
           <div className="flex flex-col md:flex-row w-full">
-            <div className="md:w-1/2 ml-6"> {/* Adjusted margin bottom */}
+            <div className="md:w-1/2 ml-9"> {/* Adjusted margin bottom */}
               <WalletInput
                 numberValue={userMoney}
                 handleNumberChange={handleNumberChange}
@@ -114,7 +114,7 @@ const Profile = () => {
               />
             </div>
 
-            <div className="md:w-1/2 mr-5 mb-2"> {/* Adjusted margin bottom */}
+            <div className="md:w-1/2"> {/* Adjusted margin bottom */}
               <StocksDiv />
             </div>
           </div>
