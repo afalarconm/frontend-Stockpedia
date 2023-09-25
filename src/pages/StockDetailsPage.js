@@ -16,8 +16,31 @@ const StockDetailsPage = () => {
     const [selectedStockPrices, setSelectedStockPrices] = useState([]);
     const [ip, setIp] = useState(null);
     const [quantity, setQuantity] = useState('');
+    const [walletBalance, setWalletBalance] = useState(null);
 
     useEffect(() => {
+
+        const getCurrentUserMoney = async (getAccessTokenSilently) => {
+            try {
+                const token = await TokenFetcher(getAccessTokenSilently);
+
+                const apiUrl = 'https://api.stockpedia.me/my-wallet';
+
+                const headers = {
+                    Authorization: `Bearer ${token}`,
+                };
+
+                const response = await axios.get(apiUrl, { headers });
+
+                console.log('Response from the server:', response.data);
+
+                setWalletBalance(response.data[0].wallet);
+
+            } catch (error) {
+                console.error('Error fetching user money:', error);
+            }
+        }
+
         const fetchIp = async () => {
             try {
                 const response = await fetch('https://api.ipify.org/?format=json');
@@ -40,8 +63,9 @@ const StockDetailsPage = () => {
         if (typeof window !== 'undefined') {
             fetchStockData();
             fetchIp();
+            getCurrentUserMoney(getAccessTokenSilently);
         }
-    }, [selectedStock]);
+    }, [selectedStock, getAccessTokenSilently]);
 
     const handleStockData = (data) => {
         const pricesArray = data.map(item => ({
@@ -116,7 +140,11 @@ const StockDetailsPage = () => {
                         <div className="bg-white border border-gray-200 rounded-lg shadow-md p-4 m-2 space-x-3">
                             <form onSubmit={handleBuyStock}>
                                 <div className="mb-3">
+                                    <div className="mb-2">
+                                        <p className="block mb-2 text-m font-semibold text-gray-900 dark:text-white">Dinero en tu billetera: ${walletBalance}</p>
+                                    </div>
                                     <label htmlFor="quantity" className="block mb-2 text-base font-semibold text-gray-900 dark:text-white">¿Cuantos Stocks quieres comprar?</label>
+
                                     <div className="relative">
                                         <div className="absolute inset-y-0 left-0 flex items-center p-2 pointer-events-none">
                                             <svg className="w-5 h-5 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24">
@@ -130,8 +158,7 @@ const StockDetailsPage = () => {
                                             placeholder="0"
                                             value={quantity}
                                             onChange={(e) => setQuantity(e.target.value)}
-                                        />
-                                    </div>
+                                        />                                    </div>
                                 </div>
                                 <div className="mb-2">
                                     <button
@@ -142,6 +169,7 @@ const StockDetailsPage = () => {
                                     </button>
                                 </div>
                             </form>
+
                         </div>
                     )}
                 </div>
