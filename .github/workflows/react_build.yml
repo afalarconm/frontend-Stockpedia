@@ -19,11 +19,11 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '16' 
+          node-version: '16'
           check-latest: true
 
       - name: Install dependencies
-        run: npm install --legacy-peer-deps
+        run: npm install
 
       - name: Lint with ESLint
         run: npm run lint 
@@ -31,10 +31,12 @@ jobs:
       - name: Build React app
         run: npm run build
 
+      - name: Install a compatible Lighthouse version
+        run: npm install -g lighthouse@8.5.0
+
       - name: Run Lighthouse performance review
         run: |
-          npm install -g lighthouse
-          lighthouse https://stockpedia.me/ --quiet --output html --output json --output-path ./lighthouse-report.html
+          lighthouse https://stockpedia.me/ --quiet --chrome-flags="--headless" --output html --output json --output-path ./lighthouse-report.html
 
       - name: Deploy to AWS S3
         uses: jakejarvis/s3-sync-action@master
