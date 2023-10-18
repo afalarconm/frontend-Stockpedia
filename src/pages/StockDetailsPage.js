@@ -6,7 +6,7 @@ import Barra from '../components/navbar';
 import StockChart from '../components/StockChart';
 import { TokenFetcher } from '../components/TokenFetcher';
 
-const API_URL = 'https://api.stockpedia.me/stocks/';
+const API_URL = 'https://api.stockpedia.me';
 
 const StockDetailsPage = () => {
     const [stockData, setStockData] = useState(null);
@@ -20,6 +20,7 @@ const StockDetailsPage = () => {
 
     useEffect(() => {
 
+        // Fetch user money
         const getCurrentUserMoney = async (getAccessTokenSilently) => {
             try {
                 const token = await TokenFetcher(getAccessTokenSilently);
@@ -41,6 +42,7 @@ const StockDetailsPage = () => {
             }
         }
 
+        // Fetch IP address
         const fetchIp = async () => {
             try {
                 const response = await fetch('https://api.ipify.org/?format=json');
@@ -51,9 +53,10 @@ const StockDetailsPage = () => {
             }
         };
 
+        // Fetch stock data
         const fetchStockData = async () => {
             try {
-                const response = await axios.get(`${API_URL}${selectedStock}`);
+                const response = await axios.get(`${API_URL}/stocks/${selectedStock}`);
                 handleStockData(response.data);
             } catch (error) {
                 console.error('Error fetching stock data:', error);
@@ -67,6 +70,7 @@ const StockDetailsPage = () => {
         }
     }, [selectedStock, getAccessTokenSilently]);
 
+    // Set stock data
     const handleStockData = (data) => {
         const pricesArray = data.map(item => ({
             x: new Date(item.datetime).getTime(),
@@ -84,11 +88,10 @@ const StockDetailsPage = () => {
         });
     };
 
+    // Display alert to user
     const displayAlert = (response) => {
         console.log('Response from the server:', response);
-        // If server response is "OK" display a success alert, otherwise display an error alert
         if (response.data === "OK") {
-            // alert the user and redirect to the profile page
             alert('Compraste Stocks!');
             window.location.href = '/profile';
 
@@ -98,10 +101,11 @@ const StockDetailsPage = () => {
         }
     };
 
+    // Handle buy stock
     const handleBuyStock = async (event) => {
         event.preventDefault();
         console.log('Quantity to buy:', quantity);
-        const apiUrl = "https://api.stockpedia.me/stocks/requests";  // Replace with your API endpoint
+        const apiUrl = "https://api.stockpedia.me/stocks/requests";
 
         try {
             const token = await TokenFetcher(getAccessTokenSilently);
@@ -113,10 +117,10 @@ const StockDetailsPage = () => {
             });
 
             console.log("Response from the server:", response.data);
-            displayAlert(response); // Call the displayAlert function with the server response
+            displayAlert(response);
         } catch (error) {
             console.error("Error buying stocks:", error);
-            alert('Error buying stocks. Please try again later.'); // Display a generic error message
+            alert('Error buying stocks. Please try again later.');
         }
     };
 
