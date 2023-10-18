@@ -6,7 +6,7 @@ import 'tailwindcss/tailwind.css';
 import Barra from '../components/navbar';
 import Footer from '../components/footer';
 
-const API_URL = 'https://api.stockpedia.me/stocks/';
+const API_URL = 'http://localhost:3000/stocks/';
 
 
 const LandingPage = () => {

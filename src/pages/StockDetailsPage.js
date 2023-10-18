@@ -3,10 +3,11 @@ import { useLocation } from 'react-router-dom';
 import { useAuth0 } from "@auth0/auth0-react";
 import axios from 'axios';
 import Barra from '../components/navbar';
+import modal from '../components/modal';
 import StockChart from '../components/StockChart';
 import { TokenFetcher } from '../components/TokenFetcher';
 
-const API_URL = 'https://api.stockpedia.me';
+const API_URL = 'http://localhost:3000';
 
 const StockDetailsPage = () => {
     const [stockData, setStockData] = useState(null);
@@ -25,7 +26,7 @@ const StockDetailsPage = () => {
             try {
                 const token = await TokenFetcher(getAccessTokenSilently);
 
-                const apiUrl = 'https://api.stockpedia.me/my-wallet';
+                const apiUrl = `${API_URL}/my-wallet`;
 
                 const headers = {
                     Authorization: `Bearer ${token}`,
@@ -101,12 +102,13 @@ const StockDetailsPage = () => {
         }
     };
 
-    // Handle buy stock
+    // Handle buy stock with Webpay
     const handleBuyStock = async (event) => {
         event.preventDefault();
         console.log('Quantity to buy:', quantity);
-        const apiUrl = "https://api.stockpedia.me/stocks/requests";
+        const apiUrl = `${API_URL}/stocks/requests`;
 
+        // Le pedimos al api el token y la url para redirigir a webpay
         try {
             const token = await TokenFetcher(getAccessTokenSilently);
             const response = await axios.post(apiUrl, { symbol: stockData?.symbol, quantity: quantity, ip: ip }, {
@@ -115,6 +117,30 @@ const StockDetailsPage = () => {
                     Authorization: `Bearer ${token}`,
                 }
             });
+
+            // The server response includes a token and a redirect URL to Webpay
+            // Open modal that has the user confirm the purchase and redirect to Webpay
+            const webpay_token = response.data.token;
+            const webpay_url = response.data.url;
+
+            // Create a form with the token and URL for the modal
+            const form = <form action={webpay_url} method="POST" id="webpay-form">
+                <input type="hidden" name="token_ws" value={webpay_token} />
+                <button id="confirmPurchaseBtn">Confirm Purchase</button>`;
+            </form>;
+
+            // Set the action for the confirm button
+            modal.setConfirmAction(() => {
+                // Handle user confirmation and redirect to Webpay if needed
+                window.location.href = webpay_url;
+            });
+
+            // Show the modal with the form
+            modal.show(form);
+
+
+
+
 
             console.log("Response from the server:", response.data);
             displayAlert(response);
@@ -125,6 +151,7 @@ const StockDetailsPage = () => {
     };
 
     return (
+        <script src='modal.js'></script>,
         <div className="min-h-screen bg-blue-100 ">
             <Barra />
             <div className="flex justify-center">
