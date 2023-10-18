@@ -3,7 +3,6 @@ import { useLocation } from 'react-router-dom';
 import { useAuth0 } from "@auth0/auth0-react";
 import axios from 'axios';
 import Barra from '../components/navbar';
-import modal from '../components/modal';
 import StockChart from '../components/StockChart';
 import { TokenFetcher } from '../components/TokenFetcher';
 
@@ -18,6 +17,8 @@ const StockDetailsPage = () => {
     const [ip, setIp] = useState(null);
     const [quantity, setQuantity] = useState('');
     const [walletBalance, setWalletBalance] = useState(null);
+    const [webpay_token, setWebpayToken] = useState(null);
+    const [webpay_url, setWebpayURL] = useState(null);
 
     useEffect(() => {
 
@@ -119,31 +120,13 @@ const StockDetailsPage = () => {
             });
 
             // The server response includes a token and a redirect URL to Webpay
-            // Open modal that has the user confirm the purchase and redirect to Webpay
-            const webpay_token = response.data.token;
-            const webpay_url = response.data.url;
-
-            // Create a form with the token and URL for the modal
-            const form = <form action={webpay_url} method="POST" id="webpay-form">
-                <input type="hidden" name="token_ws" value={webpay_token} />
-                <button id="confirmPurchaseBtn">Confirm Purchase</button>`;
-            </form>;
-
-            // Set the action for the confirm button
-            modal.setConfirmAction(() => {
-                // Handle user confirmation and redirect to Webpay if needed
-                window.location.href = webpay_url;
-            });
-
-            // Show the modal with the form
-            modal.show(form);
-
-
-
+            // set the webpay_token state to the token received from the server
+            setWebpayToken(response.data.token);
+            setWebpayURL(response.data.url);
 
 
             console.log("Response from the server:", response.data);
-            displayAlert(response);
+           // displayAlert(response);
         } catch (error) {
             console.error("Error buying stocks:", error);
             alert('Error buying stocks. Please try again later.');
@@ -152,6 +135,7 @@ const StockDetailsPage = () => {
 
     return (
         <script src='modal.js'></script>,
+        <script>modal.init();</script>,
         <div className="min-h-screen bg-blue-100 ">
             <Barra />
             <div className="flex justify-center">
@@ -204,6 +188,14 @@ const StockDetailsPage = () => {
                         </div>
                     )}
                 </div>
+                {webpay_token && webpay_url && (
+                    <div>
+                        <form action = {webpay_url} method='POST'>
+                            <input type='hidden' name='token_ws' value={webpay_token} />
+                            <input type='submit' value='Pagar con Webpay' />
+                        </form>
+                        </div>)
+                }
                 <div className="w-1/2 p-8">
                     <div className="bg-white border border-gray-200 rounded-lg shadow-md p-4">
                         <h2 className="text-xl font-semibold mb-4">Stock Price</h2>
