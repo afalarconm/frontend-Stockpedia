@@ -124,8 +124,8 @@ const StockDetailsPage = () => {
             setWebpayToken(response.data.token);
             setWebpayURL(response.data.url);
 
+            console.log("Response from the server with WebPay data:", response.data);
 
-            console.log("Response from the server:", response.data);
            // displayAlert(response);
         } catch (error) {
             console.error("Error buying stocks:", error);
@@ -134,8 +134,6 @@ const StockDetailsPage = () => {
     };
 
     return (
-        <script src='modal.js'></script>,
-        <script>modal.init();</script>,
         <div className="min-h-screen bg-blue-100 ">
             <Barra />
             <div className="flex justify-center">
