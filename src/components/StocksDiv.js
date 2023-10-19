@@ -3,6 +3,8 @@ import { useAuth0 } from '@auth0/auth0-react';
 import axios from 'axios';
 import { TokenFetcher } from './TokenFetcher';
 
+const API_URL = 'http://localhost:3000';
+
 const StocksDiv = () => {
   const { getAccessTokenSilently } = useAuth0();
   const [userStocks, setUserStocks] = useState([]);
@@ -11,7 +13,7 @@ const StocksDiv = () => {
     const fetchUserStocks = async () => {
       try {
         const token = await TokenFetcher(getAccessTokenSilently);
-        const apiUrl = 'https://api.stockpedia.me/my-stocks';
+        const apiUrl = `${API_URL}/my-stocks`;
 
         const response = await axios.get(apiUrl, {
           headers: {
