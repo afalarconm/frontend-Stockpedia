@@ -44,7 +44,7 @@ const StockChart = ({ pricesArray }) => {
     };
 
     return (
-        <div>
+        <div className='pr-3 pt-4'>
             <ReactApexChart options={chartData.options} series={chartData.series} type="line" height={350} />
         </div>
     );

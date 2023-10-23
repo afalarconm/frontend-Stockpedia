@@ -2,7 +2,7 @@ import React from 'react';
 
 const WalletInput = ({ numberValue, handleNumberChange, handleSubmit }) => {
   return (
-    <div className="bg-white shadow-md rounded-lg py-5 m-6 w-3/4">
+    <div className="bg-white shadow-md rounded-lg p-5 ">
       <div className="flex flex-col items-center">
         <label htmlFor="numberInput" className="mb-4 text-l font-semibold">
           Agregar dinero a mi billetera:

@@ -4,6 +4,8 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { TokenFetcher } from '../components/TokenFetcher';
 import Barra from '../components/navbar';
 
+const API_URL = 'http://localhost:3000';
+
 const TransactionTable = () => {
     const [transactions, setTransactions] = useState(null);
     const { isAuthenticated, getAccessTokenSilently } = useAuth0();
@@ -13,7 +15,7 @@ const TransactionTable = () => {
             try {
                 const token = await TokenFetcher(getAccessTokenSilently);
 
-                const apiUrl = 'https://api.stockpedia.me/my-transactions';
+                const apiUrl = `${API_URL}/my-transactions`;
 
                 const headers = {
                     Authorization: `Bearer ${token}`,

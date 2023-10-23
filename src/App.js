@@ -5,7 +5,7 @@ import 'tailwindcss/tailwind.css';
 import StockDetailsPage from './pages/StockDetailsPage';
 import Profile from './pages/Profile';
 import Transactions from './pages/Transactions';
-
+import Comprando from './pages/Comprando';
 
 
 const App = () => {
@@ -16,6 +16,7 @@ const App = () => {
         < Route path = '/profile' element={<Profile />} />
         <Route path='/stock-details' element={<StockDetailsPage />} />
         <Route path='/transactions' element={<Transactions />} />
+        <Route path='/comprando' element={<Comprando />} />
 
         
       </Routes>
