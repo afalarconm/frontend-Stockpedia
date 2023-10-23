@@ -60,15 +60,14 @@ const LandingPage = () => {
                 {/* Stocks Table */}
                 <div className="w-full">
                     <div className="bg-white border border-gray-200 rounded-lg shadow-md p-4">
-                        <h2 className="text-xl font-semibold mb-4">Stock Information</h2>
                         <table className="w-full border-collapse">
                             <thead>
                                 <tr className="bg-blue-200">
-                                    <th className="py-2 px-4 border">Symbol</th>
-                                    <th className="py-2 px-4 border">Company Name</th>
-                                    <th className="py-2 px-4 border">Current Price</th>
-                                    <th className="py-2 px-4 border">Currency</th>
-                                    <th className="py-2 px-4 border">Market</th>
+                                    <th className="py-2 px-4 border">📈 Stock</th>
+                                    <th className="py-2 px-4 border">📊 Nombre de la Empresa</th>
+                                    <th className="py-2 px-4 border">💲Precio actual</th>
+                                    <th className="py-2 px-4 border">💱 Moneda</th>
+                                    <th className="py-2 px-4 border">🏦 Mercado</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -80,11 +79,11 @@ const LandingPage = () => {
                                         }`}
                                         onClick={() => handleRowClick(stock.symbol)}
                                     >
-                                        <td className="py-2 px-4 border">{stock.symbol}</td>
+                                        <td className="flex justify-center py-2 px-4 border">{stock.symbol}</td>
                                         <td className="py-2 px-4 border">{stock.companyName}</td>
-                                        <td className="py-2 px-4 border">{stock.currentPrice}</td>
+                                        <td className="flex justify-center py-2 px-4 border">$ {stock.currentPrice}</td>
                                         <td className="py-2 px-4 border">{stock.currency}</td>
-                                        <td className="py-2 px-4 border">{stock.source}</td>
+                                        <td className="flex justify-center py-2 px-4 border">{stock.source}</td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -92,7 +91,6 @@ const LandingPage = () => {
                     </div>
                 </div>
             </div>
-            
                 {/* Footer */}
                 <Footer />
         </div>

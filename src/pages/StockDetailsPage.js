@@ -6,6 +6,9 @@ import Barra from '../components/navbar';
 import StockChart from '../components/StockChart';
 import { TokenFetcher } from '../components/TokenFetcher';
 
+// Import PNG assets from components folder
+import WebpayLogo from '../components/2.WebpayPlus_FN_80px.png';
+
 const API_URL = 'http://localhost:3000';
 
 const StockDetailsPage = () => {
@@ -126,36 +129,46 @@ const StockDetailsPage = () => {
 
             console.log("Response from the server with WebPay data:", response.data);
 
-           // displayAlert(response);
+            // displayAlert(response);
         } catch (error) {
             console.error("Error buying stocks:", error);
-            alert('Error buying stocks. Please try again later.');
+            alert('Ocurrio un error al comprar Stocks, por favor revisa la cantidad ingresada.');
         }
     };
+
+    const submitForm = () => {
+        const form = document.getElementById('autoSubmitForm');
+        if (form) {
+            form.submit();
+        }
+    };
+    
+    useEffect(() => {
+        if (webpay_token && webpay_url) {
+            submitForm();
+        }
+    }, [webpay_token, webpay_url]);
 
     return (
         <div className="min-h-screen bg-blue-100 ">
             <Barra />
             <div className="flex justify-center">
-                <div className="w-1/4 p-8">
+                <div className="w-1/4 m-3 mt-7 space-y-3">
                     <div className="bg-white border border-gray-200 rounded-lg shadow-md p-4">
-                        <h2 className="text-xl font-semibold mb-4">Stock Information</h2>
+                        <h2 className="text-xl font-semibold mb-2">📈 Stock Information</h2>
                         {stockData && (
                             <div>
-                                <p>Company Name: {stockData.companyName}</p>
-                                <p>Precio: {stockData.currentPrice}</p>
-                                <p>Market: {stockData.market} </p>
-                                <p>Change: {stockData.change}%</p>
+                                <p className="font-semibold">Nombre de la empresa: <span className="font-normal">{stockData.companyName}</span></p>
+                                <p className="font-semibold">Precio: <span className="font-normal">{stockData.currentPrice}</span></p>
+                                <p className="font-semibold">Mercado: <span className="font-normal">{stockData.market}</span></p>
+                                <p className="font-semibold">Ultimo cambio: <span className="font-normal">{stockData.change}%</span></p>
                             </div>
                         )}
                     </div>
                     {isAuthenticated && (
-                        <div className="bg-white border border-gray-200 rounded-lg shadow-md p-4 m-2 space-x-3">
+                        <div className="bg-white border border-gray-200 rounded-lg shadow-md p-4">
                             <form onSubmit={handleBuyStock}>
                                 <div className="mb-3">
-                                    <div className="mb-2">
-                                        <p className="block mb-2 text-m font-semibold text-gray-900 dark:text-white">Dinero en tu billetera: ${walletBalance}</p>
-                                    </div>
                                     <label htmlFor="quantity" className="block mb-2 text-base font-semibold text-gray-900 dark:text-white">¿Cuantos Stocks quieres comprar?</label>
 
                                     <div className="relative">
@@ -167,7 +180,7 @@ const StockDetailsPage = () => {
                                         <input
                                             type="text"
                                             id="quantity"
-                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-8 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-8 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-200 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                             placeholder="0"
                                             value={quantity}
                                             onChange={(e) => setQuantity(e.target.value)}
@@ -176,9 +189,10 @@ const StockDetailsPage = () => {
                                 <div className="mb-2">
                                     <button
                                         type="submit"
-                                        className="text-white bg-green-500 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+                                        className="flex items-center justify-center w-full px-4 py-3 rounded-md bg-green-500 text-white font-semibold text-sm hover:bg-green-600 focus:outline-none focus:bg-green-600"
                                     >
-                                        Comprar
+                                        Pagar con
+                                        <img src={WebpayLogo} alt="Webpay" className="w-auto mr-2 ml-1" />
                                     </button>
                                 </div>
                             </form>
@@ -186,17 +200,8 @@ const StockDetailsPage = () => {
                         </div>
                     )}
                 </div>
-                {webpay_token && webpay_url && (
-                    <div>
-                        <form action = {webpay_url} method='POST'>
-                            <input type='hidden' name='token_ws' value={webpay_token} />
-                            <input type='submit' value='Pagar con Webpay' />
-                        </form>
-                        </div>)
-                }
-                <div className="w-1/2 p-8">
+                <div className="w-1/2 m-3">
                     <div className="bg-white border border-gray-200 rounded-lg shadow-md p-4">
-                        <h2 className="text-xl font-semibold mb-4">Stock Price</h2>
                         <div style={{ width: '100%', margin: '0 auto' }}>
                             <StockChart pricesArray={selectedStockPrices} />
                         </div>
@@ -212,8 +217,22 @@ const StockDetailsPage = () => {
                 </button>
             </div>
 
+            {/* Auto-submit form for Webpay redirection */}
+            {webpay_token && webpay_url && (
+                <div>
+                    <form id="autoSubmitForm" action={webpay_url} method="POST" target="_self">
+                        <input type="hidden" name="token_ws" value={webpay_token} />
+                        <input type="submit" style={{ display: 'none' }} />
+                    </form>
+
+                </div>
+            )}
+
+
         </div>
     );
 };
 
 export default StockDetailsPage;
+
+
