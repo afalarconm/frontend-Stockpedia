@@ -5,18 +5,25 @@ const PredictionChart = ({ pricesArray, prediction }) => {
         x: item.x, // Use the timestamp as x-value
         y: item.y
     }));
-    console.log(formattedPrices);
+    console.log("formattedPrices "+formattedPrices);
 
 
     // Obtener el último punto de pricesArray
     const lastPoint = formattedPrices[0];
-    console.log(lastPoint);
+    console.log("laspoint "+lastPoint);
 
 
-    const predictionDatetime = new Date(prediction.datetime).getTime();
-    console.log(predictionDatetime);
+    const predictionDatetime = new Date(prediction.datetime)
+    console.log("predictiondatetime "+predictionDatetime);
+    const predictionDays = parseInt(prediction.prediction_time);
+    console.log("predictiondays "+predictionDays);
+    predictionDatetime.setDate(predictionDatetime.getDate() + predictionDays);
+
+    const unixTime = predictionDatetime.getTime();
+    
+
     const predictionPrice = prediction.prediction;
-    console.log(predictionPrice);
+    console.log("predictionprice "+predictionPrice);
 
     const chartData = {
         options: {
@@ -59,7 +66,7 @@ const PredictionChart = ({ pricesArray, prediction }) => {
     if (predictionDatetime > lastPoint.x) {
         chartData.series.push({
             name: 'Prediction',
-            data: [{ x: predictionDatetime, y: predictionPrice }],
+            data: [{ x: unixTime, y: predictionPrice }],
             color: '#FF0000', // Color rojo
             type: 'scatter', // Punto
             markers: {
