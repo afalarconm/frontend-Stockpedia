@@ -88,7 +88,7 @@ const Profile = () => {
         {/* Profile Information Box */}
         <div className="flex flex-col items-center">
           <div className="bg-white border border-gray-200 rounded-lg shadow-md p-5">
-            <h2 className="flex text-xl font-semibold mb-6 justify-center">Informacion Perfil</h2>
+            <h2 className="flex text-xl font-semibold mb-6 justify-center">Información Perfil</h2>
 
             <div className="flex justify-center mb-4">
               <img src={user.picture} alt={user.name} className="rounded-full" />
@@ -97,9 +97,15 @@ const Profile = () => {
             <div className="p-2 items-center mb-4">
               <p className="text-lg">{user.name}</p>
             </div>
-            <div className='flex justify-center'>
+            <div className='flex justify-center' style={{ marginBottom: '10px' }}>
               <button className="text-white bg-blue-500 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                <a href="/transactions">Mis transaciones 🤑</a>
+                <a href="/transactions">Mis transacciones 🤑</a>
+              </button>
+            </div>
+        
+            <div className='flex justify-center' style={{ marginBottom: '10px' }}>
+              <button className="text-white bg-blue-500 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                <a href="/predictions">Mis predicciones 📈</a>
               </button>
             </div>
           </div>
