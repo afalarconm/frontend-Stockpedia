@@ -29,15 +29,12 @@ const StockDetailsPage = () => {
         const getCurrentUserMoney = async (getAccessTokenSilently) => {
             try {
                 const token = await TokenFetcher(getAccessTokenSilently);
-
                 const apiUrl = `${API_URL}/my-wallet`;
-
                 const headers = {
                     Authorization: `Bearer ${token}`,
                 };
 
                 const response = await axios.get(apiUrl, { headers });
-
                 console.log('Response from the server:', response.data);
 
                 setWalletBalance(response.data[0].wallet);
@@ -115,7 +112,7 @@ const StockDetailsPage = () => {
         // Le pedimos al api el token y la url para redirigir a webpay
         try {
             const token = await TokenFetcher(getAccessTokenSilently);
-            const response = await axios.post(apiUrl, { symbol: stockData?.symbol, quantity: quantity, ip: ip }, {
+            const response = await axios.post(apiUrl, { symbol: stockData?.symbol, quantity: quantity, ip: ip, }, {
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,

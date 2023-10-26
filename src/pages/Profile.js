@@ -7,6 +7,7 @@ import Barra from '../components/navbar';
 import WalletInput from '../components/WalletInput';
 import StocksDiv from '../components/StocksDiv';
 import { TokenFetcher } from '../components/TokenFetcher';
+import Footer from '../components/footer';
 
 
 const Profile = () => {
@@ -120,6 +121,7 @@ const Profile = () => {
           Volver al inicio
         </button>
       </div>
+      <Footer />
     </div>
   );
 };
