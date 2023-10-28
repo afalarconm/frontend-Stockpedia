@@ -40,6 +40,7 @@ const TransactionTable = () => {
 
     // Ensure transactions is not null before mapping
     const transactionRows = transactions ? transactions.map((transaction, index) => (
+        //console.log(transaction.symbol, transaction.links),
         <tr key={index} className="border-t">
             <td className="px-4 py-2">{transaction.datetime}</td>
             <td className="px-4 py-2">{transaction.symbol}</td>
@@ -62,6 +63,7 @@ const TransactionTable = () => {
                 
             }
             </td>
+            
         </tr>
     )) : null;
 
