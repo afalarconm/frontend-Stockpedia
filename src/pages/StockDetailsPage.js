@@ -23,6 +23,7 @@ const StockDetailsPage = () => {
     const [walletBalance, setWalletBalance] = useState(null);
     const [webpay_token, setWebpayToken] = useState(null);
     const [webpay_url, setWebpayURL] = useState(null);
+    const [isJobmasterRunning, setIsJobmasterRunning] = useState(false);
 
     useEffect(() => {
 
@@ -177,6 +178,12 @@ const StockDetailsPage = () => {
         }
     }, [webpay_token, webpay_url]);
 
+    useEffect(() => {
+        axios.get(`${API_URL}/heartbeat`)
+          .then(() => setIsJobmasterRunning(true))
+          .catch(() => setIsJobmasterRunning(false));
+      }, []);
+
     return (
         <div className="min-h-screen bg-blue-100 ">
             <Barra />
@@ -230,9 +237,27 @@ const StockDetailsPage = () => {
 
                         {/* Sección predecir precio */}
                         <div className="bg-white border border-gray-200 rounded-lg shadow-md p-4">
+                            {/*Heartbeat jobmaster service*/}
                         <form onSubmit={handlePredictStock}>
                                 <div className="mb-3">
                                     <label htmlFor="quantity" className="block mb-2 text-base font-semibold text-gray-900 dark:text-white">Predice el precio de stocks</label>
+                                    
+
+                                    {isJobmasterRunning ? (
+                                    <div className="flex justify-center">
+                                        <div className="flex justify-between items-center space-x-2">
+                                        <svg className="animate-pulse w-6 h-6 text-green-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"> <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle> <path d="M12 8v4l4 2"></path> </svg>
+                                        <p className="text-sm text-gray-500">Jobmaster service is working</p>
+                                        </div>
+                                    </div>
+                                    ) : (
+                                    <div className="flex justify-center">
+                                        <div className="flex justify-between items-center space-x-2">
+                                        <svg className="animate-pulse w-6 h-6 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"> <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle> <path d="M12 8v4l4 2"></path> </svg>
+                                        <p className="text-sm text-gray-500">Jobmaster service is not working</p>
+                                        </div>
+                                    </div>
+                                    )}
 
                                     <label htmlFor="quantity" className="block mb-2 text-base font-semibold text-gray-500 dark:text-white">1. Ingresa cantidad de stocks a predecir</label>
                                     <div className="relative">
