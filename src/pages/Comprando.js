@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Barra from '../components/navbar';
 
-const API_URL = 'http://localhost:3000';
+const API_URL = 'https://stockpedia.me';
 
 const BuyingProcess = () => {
     const [loading, setLoading] = useState(true);

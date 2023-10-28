@@ -4,7 +4,7 @@ import axios from 'axios';
 import { TokenFetcher } from './TokenFetcher';
 import { useNavigate } from 'react-router-dom';
 
-const API_URL = 'http://localhost:3000';
+const API_URL = 'https://stockpedia.me';
 
 const StocksDiv = () => {
   const { getAccessTokenSilently } = useAuth0();
@@ -45,36 +45,36 @@ const StocksDiv = () => {
         <div className="w-full overflow-y-auto rounded-lg shadow-md">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="text-sm text-gray-700  bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-            <tr>
-              <th scope='col'
-              >
-                Stock
-              </th>
-              <th scope='col'>
-                Cantidad
-              </th>
-            </tr>
+              <tr>
+                <th scope='col'
+                >
+                  Stock
+                </th>
+                <th scope='col'>
+                  Cantidad
+                </th>
+              </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-            {/* Iterating over user stocks to create rows for the table */}
-            {userStocks.map((stock) => (
-              <tr
-                key={stock.symbol}
-                onClick={() => handleRowClick(stock.symbol)}
-                className="cursor-pointer hover:bg-gray-100"
-              >
-                <td className="px-6 py-4">
-                  <div className="text-lg font-semibold text-gray-900">
-                    {stock.symbol}
-                  </div>
-                </td>
-                <td className="px-6 py-4">
-                  <div className="text-lg text-gray-900">
-                    {stock.quantity}
-                  </div>
-                </td>
-              </tr>
-            ))}
+              {/* Iterating over user stocks to create rows for the table */}
+              {userStocks.map((stock) => (
+                <tr
+                  key={stock.symbol}
+                  onClick={() => handleRowClick(stock.symbol)}
+                  className="cursor-pointer hover:bg-gray-100"
+                >
+                  <td className="px-6 py-4">
+                    <div className="text-lg font-semibold text-gray-900">
+                      {stock.symbol}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="text-lg text-gray-900">
+                      {stock.quantity}
+                    </div>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>

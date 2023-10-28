@@ -11,7 +11,7 @@ import { TokenFetcher } from '../components/TokenFetcher';
 // Import PNG assets from components folder
 import WebpayLogo from '../components/2.WebpayPlus_FN_80px.png';
 
-const API_URL = 'http://localhost:3000';
+const API_URL = 'https://stockpedia.me';
 
 const StockDetailsPage = () => {
     const [stockData, setStockData] = useState(null);
@@ -173,7 +173,7 @@ const StockDetailsPage = () => {
             form.submit();
         }
     };
-    
+
     useEffect(() => {
         if (webpay_token && webpay_url) {
             submitForm();
@@ -182,9 +182,9 @@ const StockDetailsPage = () => {
 
     useEffect(() => {
         axios.get(`${API_URL}/heartbeat`)
-          .then(() => setIsJobmasterRunning(true))
-          .catch(() => setIsJobmasterRunning(false));
-      }, []);
+            .then(() => setIsJobmasterRunning(true))
+            .catch(() => setIsJobmasterRunning(false));
+    }, []);
 
     return (
         <div className="min-h-screen bg-blue-100 ">
@@ -204,103 +204,103 @@ const StockDetailsPage = () => {
                     </div>
                     {isAuthenticated && (
                         <>
-                        <div className="bg-white border border-gray-200 rounded-lg shadow-md p-4">
-                            <form onSubmit={handleBuyStock}>
-                                <div className="mb-3">
-                                    <label htmlFor="quantity" className="block mb-2 text-base font-semibold text-gray-900 dark:text-white">¿Cuantos Stocks quieres comprar?</label>
+                            <div className="bg-white border border-gray-200 rounded-lg shadow-md p-4">
+                                <form onSubmit={handleBuyStock}>
+                                    <div className="mb-3">
+                                        <label htmlFor="quantity" className="block mb-2 text-base font-semibold text-gray-900 dark:text-white">¿Cuantos Stocks quieres comprar?</label>
 
-                                    <div className="relative">
-                                        <div className="absolute inset-y-0 left-0 flex items-center p-2 pointer-events-none">
-                                            <svg className="w-5 h-5 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24">
-                                                <path stroke="currentColor" strokeLinecap="round" strokeWidth="2" d="M1 12c1.5 1.5 5.25 3 9 3s7.5-1.5 9-3m-9-1h.01M2 19h16a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1ZM14 5V3a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v2h8Z"></path>
-                                            </svg>
-                                        </div>
-                                        <input
-                                            type="text"
-                                            id="quantity"
-                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-8 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-200 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                            placeholder="0"
-                                            value={quantity}
-                                            onChange={(e) => setQuantity(e.target.value)}
-                                        />                                    </div>
-                                </div>
-                                <div className="mb-2">
-                                    <button
-                                        type="submit"
-                                        className="flex items-center justify-center w-full px-4 py-3 rounded-md bg-green-500 text-white font-semibold text-sm hover:bg-green-600 focus:outline-none focus:bg-green-600"
-                                    >
-                                        Pagar con
-                                        <img src={WebpayLogo} alt="Webpay" className="w-auto mr-2 ml-1" />
-                                    </button>
-                                </div>
-                            </form>
-
-                        </div>
-
-                        {/* Sección predecir precio */}
-                        <div className="bg-white border border-gray-200 rounded-lg shadow-md p-4">
-                            {/*Heartbeat jobmaster service*/}
-                        <form onSubmit={handlePredictStock}>
-                                <div className="mb-3">
-                                    <label htmlFor="quantity" className="block mb-2 text-base font-semibold text-gray-900 dark:text-white">Predice el precio de stocks</label>
-                                    
-
-                                    {isJobmasterRunning ? (
-                                    <div className="flex justify-center">
-                                        <div className="flex justify-between items-center space-x-2">
-                                        <svg className="animate-pulse w-6 h-6 text-green-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"> <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle> <path d="M12 8v4l4 2"></path> </svg>
-                                        <p className="text-sm text-gray-500">Jobmaster service is working</p>
-                                        </div>
+                                        <div className="relative">
+                                            <div className="absolute inset-y-0 left-0 flex items-center p-2 pointer-events-none">
+                                                <svg className="w-5 h-5 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24">
+                                                    <path stroke="currentColor" strokeLinecap="round" strokeWidth="2" d="M1 12c1.5 1.5 5.25 3 9 3s7.5-1.5 9-3m-9-1h.01M2 19h16a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1ZM14 5V3a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v2h8Z"></path>
+                                                </svg>
+                                            </div>
+                                            <input
+                                                type="text"
+                                                id="quantity"
+                                                className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-8 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-200 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                placeholder="0"
+                                                value={quantity}
+                                                onChange={(e) => setQuantity(e.target.value)}
+                                            />                                    </div>
                                     </div>
-                                    ) : (
-                                    <div className="flex justify-center">
-                                        <div className="flex justify-between items-center space-x-2">
-                                        <svg className="animate-pulse w-6 h-6 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"> <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle> <path d="M12 8v4l4 2"></path> </svg>
-                                        <p className="text-sm text-gray-500">Jobmaster service is not working</p>
-                                        </div>
+                                    <div className="mb-2">
+                                        <button
+                                            type="submit"
+                                            className="flex items-center justify-center w-full px-4 py-3 rounded-md bg-green-500 text-white font-semibold text-sm hover:bg-green-600 focus:outline-none focus:bg-green-600"
+                                        >
+                                            Pagar con
+                                            <img src={WebpayLogo} alt="Webpay" className="w-auto mr-2 ml-1" />
+                                        </button>
                                     </div>
-                                    )}
+                                </form>
 
-                                    <label htmlFor="quantity" className="block mb-2 text-base font-semibold text-gray-500 dark:text-white">1. Ingresa cantidad de stocks a predecir</label>
-                                    <div className="relative">
-                                        <div className="absolute inset-y-0 left-0 flex items-center p-2 pointer-events-none">
-                                            <svg className="w-5 h-5 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24">
-                                                <path stroke="currentColor" strokeLinecap="round" strokeWidth="2" d="M1 12c1.5 1.5 5.25 3 9 3s7.5-1.5 9-3m-9-1h.01M2 19h16a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1ZM14 5V3a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v2h8Z"></path>
-                                            </svg>
-                                        </div>
-                                        <input
-                                            type="text"
-                                            id="quantity"
-                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-8 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-200 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                            placeholder="0"
-                                            value={quantity}
-                                            onChange={(e) => setQuantity(e.target.value)}
-                                        />                                    </div>
-                                    
-                                    <label htmlFor="quantity" className="block mb-2 text-base font-semibold text-gray-500 dark:text-white">2. Ingresa cantidad de días a futuro a predecir</label>
-                                    <div className="relative">
-                                        <div className="absolute inset-y-0 left-0 flex items-center p-2 pointer-events-none">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clock" viewBox="0 0 16 16"> <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/> <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/> </svg>
-                                        </div>
-                                        <input
-                                            type="text"
-                                            id="quantity"
-                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-8 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-200 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                            placeholder="0"
-                                            value={time}
-                                            onChange={(e) => setTime(e.target.value)}
-                                        />                                    </div>
-                                </div>
-                                <div className="mb-2">
-                                    <button
-                                        type="submit"
-                                        className="flex items-center justify-center w-full px-4 py-3 rounded-md bg-green-500 text-white font-semibold text-sm hover:bg-green-600 focus:outline-none focus:bg-green-600"
-                                    >
-                                        Predecir precio
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
+                            </div>
+
+                            {/* Sección predecir precio */}
+                            <div className="bg-white border border-gray-200 rounded-lg shadow-md p-4">
+                                {/*Heartbeat jobmaster service*/}
+                                <form onSubmit={handlePredictStock}>
+                                    <div className="mb-3">
+                                        <label htmlFor="quantity" className="block mb-2 text-base font-semibold text-gray-900 dark:text-white">Predice el precio de stocks</label>
+
+
+                                        {isJobmasterRunning ? (
+                                            <div className="flex justify-center">
+                                                <div className="flex justify-between items-center space-x-2">
+                                                    <svg className="animate-pulse w-6 h-6 text-green-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"> <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle> <path d="M12 8v4l4 2"></path> </svg>
+                                                    <p className="text-sm text-gray-500">Jobmaster service is working</p>
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <div className="flex justify-center">
+                                                <div className="flex justify-between items-center space-x-2">
+                                                    <svg className="animate-pulse w-6 h-6 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"> <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle> <path d="M12 8v4l4 2"></path> </svg>
+                                                    <p className="text-sm text-gray-500">Jobmaster service is not working</p>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        <label htmlFor="quantity" className="block mb-2 text-base font-semibold text-gray-500 dark:text-white">1. Ingresa cantidad de stocks a predecir</label>
+                                        <div className="relative">
+                                            <div className="absolute inset-y-0 left-0 flex items-center p-2 pointer-events-none">
+                                                <svg className="w-5 h-5 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24">
+                                                    <path stroke="currentColor" strokeLinecap="round" strokeWidth="2" d="M1 12c1.5 1.5 5.25 3 9 3s7.5-1.5 9-3m-9-1h.01M2 19h16a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1ZM14 5V3a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v2h8Z"></path>
+                                                </svg>
+                                            </div>
+                                            <input
+                                                type="text"
+                                                id="quantity"
+                                                className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-8 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-200 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                placeholder="0"
+                                                value={quantity}
+                                                onChange={(e) => setQuantity(e.target.value)}
+                                            />                                    </div>
+
+                                        <label htmlFor="quantity" className="block mb-2 text-base font-semibold text-gray-500 dark:text-white">2. Ingresa cantidad de días a futuro a predecir</label>
+                                        <div className="relative">
+                                            <div className="absolute inset-y-0 left-0 flex items-center p-2 pointer-events-none">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clock" viewBox="0 0 16 16"> <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z" /> <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z" /> </svg>
+                                            </div>
+                                            <input
+                                                type="text"
+                                                id="quantity"
+                                                className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-8 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-200 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                placeholder="0"
+                                                value={time}
+                                                onChange={(e) => setTime(e.target.value)}
+                                            />                                    </div>
+                                    </div>
+                                    <div className="mb-2">
+                                        <button
+                                            type="submit"
+                                            className="flex items-center justify-center w-full px-4 py-3 rounded-md bg-green-500 text-white font-semibold text-sm hover:bg-green-600 focus:outline-none focus:bg-green-600"
+                                        >
+                                            Predecir precio
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
 
                         </>
 

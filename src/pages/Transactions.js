@@ -4,7 +4,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { TokenFetcher } from '../components/TokenFetcher';
 import Barra from '../components/navbar';
 
-const API_URL = 'http://localhost:3000';
+const API_URL = 'https://stockpedia.me';
 
 const TransactionTable = () => {
     const [transactions, setTransactions] = useState(null);
