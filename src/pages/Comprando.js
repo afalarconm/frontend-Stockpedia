@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Barra from '../components/navbar';
+import { useAuth0, withAuthenticationRequired } from '@auth0/auth0-react';
+
 
 const API_URL = 'http://localhost:3000';
 
@@ -8,6 +10,8 @@ const BuyingProcess = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
     const [success, setSuccess] = useState(false);
+    const { user, getAccessTokenSilently } = useAuth0();
+
 
     useEffect(() => {
         const validatePayment = async () => {
@@ -21,7 +25,14 @@ const BuyingProcess = () => {
                 if (response.status === 200) {
 
                     try {
-                        const boleta = await axios.post(`${API_URL}/boleta`, { token_ws: token_ws });
+
+                        const token = await getAccessTokenSilently();
+                        const headers = {
+                            'Content-Type': 'application/json',
+                            Authorization: `Bearer ${token}`
+                        };
+
+                        const boleta = await axios.post(`${API_URL}/boleta`, { token_ws: token_ws }, { headers: headers });
 
                         // Parse the json dump in the response body
                         const boleta_url = boleta.data.body;

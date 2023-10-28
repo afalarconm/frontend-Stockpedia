@@ -47,6 +47,21 @@ const TransactionTable = () => {
             <td className="px-4 py-2">{transaction.state}</td>
             <td className="px-4 py-2">{transaction.ip}</td>
             <td className="px-4 py-2">{transaction.country_name}</td>
+            <td className="px-4 py-2">
+            {
+                transaction.state === "completed" ? (
+                    <button
+                        onClick={() => window.open(transaction.links)} // Opens the link in a new tab when clicking the button
+                        className="btn btn-link pl-0 mt-2 mb-4"
+                    >
+                        <i className="fas fa-download pr-1"></i> Descargas
+                    </button>
+                ) : (
+                    <span>No hay boleta</span>
+                )
+                
+            }
+            </td>
         </tr>
     )) : null;
 
@@ -61,6 +76,7 @@ const TransactionTable = () => {
                         <th className="px-4 py-2">Status</th>
                         <th className="px-4 py-2">IP</th>
                         <th className="px-4 py-2">País</th>
+                        <th className="px-4 py-2">Acción</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -76,7 +92,7 @@ const Transactions = () => {
         <div className="min-h-screen bg-blue-100">
             <Barra />
             <div className="flex justify-center">
-                <div className="w-1/2 p-8">
+                <div className="w-full p-8">
                     <div className="bg-white border border-gray-200 rounded-lg shadow-md p-4">
                         <h2 className="text-xl font-semibold mb-4">Mis Transacciones</h2>
                         <TransactionTable />

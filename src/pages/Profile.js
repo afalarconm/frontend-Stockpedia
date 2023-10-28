@@ -4,92 +4,86 @@ import { useAuth0, withAuthenticationRequired } from '@auth0/auth0-react';
 import axios from 'axios';
 
 import Barra from '../components/navbar';
-import WalletInput from '../components/WalletInput';
 import StocksDiv from '../components/StocksDiv';
 import { TokenFetcher } from '../components/TokenFetcher';
 import Footer from '../components/footer';
 
+const API_URL = 'http://localhost:3000';
 
 const Profile = () => {
   // Auth0 and state variables
   const { user, getAccessTokenSilently } = useAuth0();
-  const [userMoney, setUserMoney] = useState(0);
-  const [addedMoney, setUserAddedMoney] = useState('');
+  const [notificationsEnabled, setNotificationsEnabled] = useState(false);
+  const userEmail = user?.email;
 
-  // On window load, fetch user money
-  useEffect(() => {
-    getUserMoney(getAccessTokenSilently);
-  }
-    , [getAccessTokenSilently]);
-
-  // Function to fetch user money
-  const getUserMoney = async (getAccessTokenSilently) => {
+  // Function to fetch user settings
+  const fetchUserSettings = async () => {
     try {
-      const token = await TokenFetcher(getAccessTokenSilently);
-
-      const apiUrl = 'https://api.stockpedia.me/my-wallet';
-
-      const headers = {
-        Authorization: `Bearer ${token}`,
-      };
+      const token = await getAccessTokenSilently();
+      const apiUrl = `${API_URL}/user-settings`;
+      const headers = { Authorization: `Bearer ${token}` };
 
       const response = await axios.get(apiUrl, { headers });
-
-      console.log('Response from the server:', response.data);
-
-      setUserMoney(response.data[0].wallet);
-
+      const settings = response.data;
+      setNotificationsEnabled(settings.notificationsEnabled);
     } catch (error) {
-      console.error('Error fetching user money:', error);
+      console.error('Error fetching user settings:', error);
     }
-  }
+  };
 
-  // Function to update user money on the server
-  const updateUserMoneyOnServer = async (aumento) => {
+  // Function to handle the change in notifications preference
+  const handleNotificationsChange = (event) => {
+    setNotificationsEnabled(event.target.checked);
+  };
+
+  // Function to submit the updated notification settings to the server
+  const submitNotificationSettings = async () => {
     try {
-      const token = await TokenFetcher(getAccessTokenSilently);
-
-      const apiUrl = 'https://api.stockpedia.me/my-wallet/deposit';
-
-      const headers = {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
+      const token = await getAccessTokenSilently();
+      const apiUrl = `${API_URL}/update-user-settings`;
+      const headers = { 
+        'Content-Type': 'application/json', 
+        Authorization: `Bearer ${token}`
       };
-
-      const response = await axios.post(apiUrl, { amount: aumento }, { headers });
-
-      console.log('Response from the server:', response.data);
-
-      // fetch user money
-      getUserMoney();
-
+  
+      const body = {
+        notificationsEnabled, // this should be a boolean value
+        email: userEmail,
+      };
+  
+      // Make a POST request to update the notification settings
+      const response = await axios.post(apiUrl, body, { headers });
+  
+      if (response.status !== 200) {
+        // If the server responded with a status other than 200, handle it here
+        console.error('Server responded with status:', response.status);
+      }
     } catch (error) {
-      console.error('Error updating money on the server:', error);
+      console.error('Error updating notification settings:', error);
+      // Here, you should have a better error handling mechanism, showing the error message in UI
     }
   };
 
 
-  // Function to handle input change
-  const handleNumberChange = (event) => {
-    setUserAddedMoney(parseInt(event.target.value, 10));
-  };
+  // Effect hook for fetching user settings and performing operations that require the user's email
+  useEffect(() => {
+    
+    if (userEmail) {
+      console.log("User's email is:", userEmail);
+      // Any additional operations that require the user's email can go here
+    }
 
-  // Function to handle form submission
-  const handleSubmit = () => {
-    console.log('Added money:', addedMoney);
-    updateUserMoneyOnServer(addedMoney);
-    alert('Dinero agregado a tu billetera!');
-    window.location.href = '/profile';
-  };
-
+    fetchUserSettings(); // Fetch user settings from the server
+  }, [getAccessTokenSilently, user]);
   return (
+    
     <div className="min-h-screen bg-blue-100">
       <Barra />
       <div className="flex justify-center pt-3 space-x-5 mb-5">
         {/* Profile Information Box */}
         <div className="flex flex-col items-center">
           <div className="bg-white border border-gray-200 rounded-lg shadow-md p-5">
-            <h2 className="flex text-xl font-semibold mb-6 justify-center">Informacion Perfil</h2>
+            <h2 className="text-xl font-semibold mb-6 justify-center">Informacion Perfil</h2>
 
             <div className="flex justify-center mb-4">
               <img src={user.picture} alt={user.name} className="rounded-full" />
@@ -98,14 +92,29 @@ const Profile = () => {
             <div className="p-2 items-center mb-4">
               <p className="text-lg">{user.name}</p>
             </div>
-            <div className='flex justify-center'>
-              <button className="text-white bg-blue-500 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                <a href="/transactions">Mis transaciones 🤑</a>
+            <div className="flex justify-center">
+              <button 
+                className="text-white bg-blue-500 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                onClick={() => window.location.href = '/transactions'}
+              >
+                Mis transacciones 🤑
               </button>
             </div>
+            <div className="py-3">
+              <label className="block text-sm font-medium text-gray-700">
+                Enable Notifications:
+                <input
+                  type="checkbox"
+                  checked={notificationsEnabled}
+                  onChange={handleNotificationsChange}
+                  className="ml-2 form-checkbox"
+                />
+              </label>
+            </div>
+            <button onClick={submitNotificationSettings} className="btn btn-primary">
+              Save Notification Settings
+            </button>
           </div>
-
-
         </div>
         {/* Stocks Div */}
         <div className="flex flex-col items-center">
