@@ -82,7 +82,7 @@ const BuyingProcess = () => {
     }, [success, error]);
 
 
-    if (success == false && error == false) {
+    if (success === false && error === false) {
         return (
             <div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
                 <Barra />
@@ -99,7 +99,7 @@ const BuyingProcess = () => {
                 </div>
             </div>
         );
-    } else if (error == true) {
+    } else if (error === true) {
         return (
             <div className="min-h-screen bg-blue-100">
                 <Barra />

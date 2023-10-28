@@ -41,19 +41,22 @@ const Profile = () => {
     try {
       const token = await getAccessTokenSilently();
       const apiUrl = `${API_URL}/update-user-settings`;
-      const headers = { 
-        'Content-Type': 'application/json', 
+      const headers = {
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`
       };
-  
+
+      // Alert the user
+      alert('Cambiando tus preferencias de notificaciones...');
+
       const body = {
         notificationsEnabled, // this should be a boolean value
         email: userEmail,
       };
-  
+
       // Make a POST request to update the notification settings
       const response = await axios.post(apiUrl, body, { headers });
-  
+
       if (response.status !== 200) {
         // If the server responded with a status other than 200, handle it here
         console.error('Server responded with status:', response.status);
@@ -64,10 +67,9 @@ const Profile = () => {
     }
   };
 
-
   // Effect hook for fetching user settings and performing operations that require the user's email
   useEffect(() => {
-    
+
     if (userEmail) {
       console.log("User's email is:", userEmail);
       // Any additional operations that require the user's email can go here
@@ -76,7 +78,7 @@ const Profile = () => {
     fetchUserSettings(); // Fetch user settings from the server
   }, [getAccessTokenSilently, user]);
   return (
-    
+
     <div className="min-h-screen bg-blue-100">
       <Barra />
       <div className="flex justify-center pt-3 space-x-5 mb-5">
@@ -93,7 +95,7 @@ const Profile = () => {
               <p className="text-lg">{user.name}</p>
             </div>
             <div className="flex justify-center">
-              <button 
+              <button
                 className="text-white bg-blue-500 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                 onClick={() => window.location.href = '/transactions'}
               >
@@ -101,8 +103,8 @@ const Profile = () => {
               </button>
             </div>
             <div className="py-3">
-              <label className="block text-sm font-medium text-gray-700">
-                Enable Notifications:
+              <label className="flex justify-center text-sm font-medium text-gray-700">
+                Activar notificaciones:
                 <input
                   type="checkbox"
                   checked={notificationsEnabled}
@@ -110,10 +112,11 @@ const Profile = () => {
                   className="ml-2 form-checkbox"
                 />
               </label>
-            </div>
-            <button onClick={submitNotificationSettings} className="btn btn-primary">
-              Save Notification Settings
-            </button>
+
+              <button onClick={submitNotificationSettings} className="flex justify-center text-white bg-blue-500 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                Guardar 
+              </button>
+            </div>
           </div>
         </div>
         {/* Stocks Div */}
