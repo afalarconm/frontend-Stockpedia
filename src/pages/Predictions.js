@@ -51,7 +51,10 @@ const PredictionTable = ({onOpenChart, prediction}) => {
             <td className="px-4 py-2">{prediction.quantity}</td>
             <td className="px-4 py-2">{prediction.datetime}</td>
             <td className="px-4 py-2">{prediction.prediction_time}</td>
+            <td className="px-4 py-2">{prediction.original_price}</td>
             <td className="px-4 py-2">{prediction.prediction}</td>
+            <td className="px-4 py-2">{prediction.original_price * prediction.quantity}</td>
+            <td className="px-4 py-2">{prediction.expected_gain}</td>
             <td className="px-4 py-2">{prediction.state}</td>
             <td className="px-4 py-2"><button className="text-white bg-blue-500 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"  
             onClick={() => onOpenChart(prediction)}
@@ -72,7 +75,10 @@ const PredictionTable = ({onOpenChart, prediction}) => {
                         <th className="px-4 py-2">Cantidad prevista</th>
                         <th className="px-4 py-2">Fecha de predicción</th>
                         <th className="px-4 py-2">Tiempo futuro</th>
-                        <th className="px-4 py-2">Precio esperado</th>
+                        <th className="px-4 py-2">Precio Unitario Original</th>
+                        <th className="px-4 py-2">Precio Unitario Esperado</th>
+                        <th className="px-4 py-2">Costo Total de Transacción</th>
+                        <th className="px-4 py-2">Ganancia Total Esperada</th>
                         <th className="px-4 py-2">Estado</th>
                         <th className="px-4 py-2">Gráfico</th>
                     </tr>
@@ -127,24 +133,26 @@ const Predictions = () => {
         <div className="min-h-screen bg-blue-100">
             <Barra />
             <div className="flex justify-center">
-                <div className="w-1/2 p-8">
+                <div className="w-full p-8">
                     <div className="bg-white border border-gray-200 rounded-lg shadow-md p-4">
                         <h2 className="text-xl font-semibold mb-4">Mis Predicciones</h2>
                         <PredictionTable onOpenChart={handleOpenChart}/>
                     </div>
                 </div>
             </div>
-            <div className="w-1/2 m-3">
+            <div className="flex justify-center">
+            <div className="w-full m-4">
                     <div className="bg-white border border-gray-200 rounded-lg shadow-md p-4">
                         <div style={{ width: '100%', margin: '0 auto' }}>
                             <h2 className="text-xl font-semibold mb-4">Gráfico de predicción</h2>
                             {selectedStockPrices && selectedPrediction ? (
-                            <PredictionChart pricesArray={selectedStockPrices} prediction={selectedPrediction} />
+                            <PredictionChart  pricesArray={selectedStockPrices} prediction={selectedPrediction} />
                                 ) : (
                             <p>Selecciona una predicción para ver el gráfico.</p>
                                 )}
                         </div>
                     </div>
+                </div>
                 </div>
         </div>
     );
