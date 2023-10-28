@@ -50,7 +50,7 @@ jobs:
 
       - name: Invalidate CloudFront distribution
         run: |
-          aws cloudfront create-invalidation --distribution-id YOUR_CLOUDFRONT_DISTRIBUTION_ID --paths "/*"
+          aws cloudfront create-invalidation --distribution-id EAISMBCX0HZEH --paths "/*"
         env:
           AWS_REGION: 'us-east-1'
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
