@@ -6,6 +6,9 @@ class PredictionChart extends Component {
     constructor(props) {
         super(props);
 
+        // setLineColor and setPointColor
+        // const [lineColor, setLineColor] = useState(null);
+
         
         const { pricesArray, prediction } = this.props;
 
@@ -25,12 +28,18 @@ class PredictionChart extends Component {
         const predictionPrice = prediction.prediction;
 
         let lineColor, pointColor;
-        if (predictionPrice > originalPrice) {
+        console.log("predictionPrice "+predictionPrice);
+        console.log("originalPrice "+originalPrice);
+        if (parseFloat(predictionPrice) > parseFloat(originalPrice)) {
             lineColor = 'rgba(0, 255, 0, 0.5)'; // Verde
             pointColor = '#00FF00'; // Verde
+            console.log("Entró a verde "+pointColor);
+            console.log("prediction "+predictionPrice);
+            console.log("original "+originalPrice);
         } else {
             lineColor = 'rgba(255, 0, 0, 0.5)'; // Rojo
             pointColor = '#FF0000'; // Rojo
+            console.log("Entró a rojo "+pointColor);
         }
 
         this.state = {
