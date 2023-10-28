@@ -17,7 +17,6 @@ class PredictionChart extends Component {
         y: item.y,
         }));
         console.log("formattedPrices "+formattedPrices[2].y);
-        const lastPoint = formattedPrices[0];
 
         const originalPrice = prediction.original_price;
         const originalDate = prediction.datetime;

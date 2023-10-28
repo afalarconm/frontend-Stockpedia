@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth0 } from "@auth0/auth0-react";
@@ -10,7 +12,7 @@ const API_URL = 'http://localhost:3000';
 const PredictionTable = ({onOpenChart, prediction}) => {
     const [predictions, setPredictions] = useState(null);
     const { isAuthenticated, getAccessTokenSilently } = useAuth0();
-    const [selectedStock, setSelectedStock] = useState(null);
+    const [selectedStock] = useState(null);
 
 
     useEffect(() => {
@@ -110,8 +112,11 @@ const Predictions = () => {
         setSelectedStockPrices(pricesArray);
     };
 
-    // Fetch stock data
-    const fetchStockData = async () => {
+    
+
+    useEffect(() => {
+        // Fetch stock data
+        const fetchStockData = async () => {
         try {
             const response = await axios.get(`${API_URL}/stocks/${selectedStock}`);
             handleStockData(response.data);
@@ -120,7 +125,6 @@ const Predictions = () => {
         }
     };
 
-    useEffect(() => {
         if (selectedStock) {
             fetchStockData();
         }

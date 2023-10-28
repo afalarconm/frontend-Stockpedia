@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAuth0 } from "@auth0/auth0-react";
