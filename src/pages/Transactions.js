@@ -42,7 +42,7 @@ const TransactionTable = () => {
     const transactionRows = transactions ? transactions.map((transaction, index) => (
         //console.log(transaction.symbol, transaction.links),
         <tr key={index} className="border-t">
-            <td className="flex justify-center px-4 py-2">{new Date(transaction.datetime).toLocaleString()}</td>
+            <td className="flex justify-center px-4 py-2">{transaction.datetime}</td>
             <td className="px-4 py-2">{transaction.symbol}</td>
             <td className="px-4 py-2">{transaction.quantity}</td>
             <td className="px-4 py-2">{transaction.state}</td>
