@@ -22,8 +22,9 @@ Antes de comenzar, prepare su entorno con lo siguiente:
 
 1. *Estructura del comando:* Use el comando `sls create` con opciones específicas para definir y crear su servicio:
 
-    bash
+    ```bash
     sls create -n ayudantia-serverless -t aws-python3
+    ```
     
 
     - `-n` establece el nombre de su servicio.
@@ -37,8 +38,9 @@ Antes de comenzar, prepare su entorno con lo siguiente:
 
 2. *Despliegue:*
 
-    bash
+    ```bash
     sls deploy --stage demo
+    ```
     
 
     - `--stage` define el entorno de despliegue, permitiendo diferenciar entre ambientes como desarrollo, producción, etc.
@@ -54,51 +56,56 @@ Las capas personalizadas permiten compartir código y componentes entre varias f
 
 1. *Creación:*
 
-    bash
+    ``` bash
     python3 -m venv test_venv
+    ```
     
 
 2. *Activación:* Asegúrese de activar el entorno virtual para instalar dependencias de manera aislada.
 
-    bash
+    ```bash
     # Para sistemas basados en Unix
     source test_venv/bin/activate
 
     # Para Windows
     .\test_venv\Scripts\activate
+    ```
     
 
 3. *Verificación:* Confirme que su entorno virtual está activo comprobando la versión de Python.
 
-    bash
+    ```bash
     python --version
+    ```
     
 
 #### Paso 2: Manejo de Dependencias
 
 1. *Organización de Archivos:* Es esencial que las dependencias se instalen en una estructura de directorio reconocible por AWS Lambda.
 
-    bash
+    ``` bash
     mkdir python
+    ```
     
 
 2. *Instalación de Paquetes:* Utilice `pip` para instalar las dependencias necesarias dentro del directorio creado.
 
-    bash
+    ``` bash
     pip install requests -t python
+    ```
     
 
 #### Paso 3: Preparación y Carga de la Capa Personalizada
 
 1. *Creación de Archivo Zip:*
 
-    bash
+    ``` bash
     # En sistemas basados en Unix
     zip -r requests.zip python
 
     # En Windows
     powershell Compress-Archive python requests.zip
-    
+    ```
 
 2. *Subida a AWS:*
 
