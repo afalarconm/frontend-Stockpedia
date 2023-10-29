@@ -72,7 +72,7 @@ const BuyingProcess = () => {
             // Redirects after 3 seconds
             redirectTimeout = setTimeout(() => {
                 window.location.href = '/profile';
-            }, 5000);
+            }, 50000);
         }
         if (error) {
             // Redirects after 5 seconds
