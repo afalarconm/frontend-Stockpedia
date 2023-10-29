@@ -10,7 +10,7 @@ import StocksDiv from '../components/StocksDiv';
 import { TokenFetcher } from '../components/TokenFetcher';
 import Footer from '../components/footer';
 
-const API_URL = 'http://localhost:3000';
+const API_URL = 'https://api.stockpedia.me';
 
 const Profile = () => {
   // Auth0 and state variables
