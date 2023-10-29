@@ -36,7 +36,11 @@ Se ejecuta Lighthouse para realizar una revisión de rendimiento de la aplicaci�
 
 ### 2.7. Despliegue a AWS S3
 
-Finalmente, se despliega la aplicación construida en AWS S3 utilizando la acción `jakejarvis/s3-sync-action@master`. Esto permite que la aplicación esté disponible en un entorno de producción.
+Se despliega la aplicación construida en AWS S3 utilizando la acción `jakejarvis/s3-sync-action@master`. Esto permite que la aplicación esté disponible en un entorno de producción.
+
+### 2.8. Invalidación del Cache de CloudFront
+
+Finalmente, se invalida el cache de CloudFront para que los usuarios puedan ver los cambios realizados en la aplicación.
 
 ## 3. Herramientas Utilizadas
 
@@ -78,7 +82,8 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 16.3.0.
+          node-version: '16'
+          check-latest: true
 
       - name: Install dependencies
         run: npm install
@@ -89,10 +94,12 @@ jobs:
       - name: Build React app
         run: npm run build
 
+      - name: Install a compatible Lighthouse version
+        run: npm install -g lighthouse@8.5.0
+
       - name: Run Lighthouse performance review
         run: |
-          npm install -g lighthouse
-          lighthouse https://stockpedia.me/ --quiet --output html --output json --output-path ./lighthouse-report.html
+          lighthouse https://stockpedia.me/ --quiet --chrome-flags="--headless" --output html --output json --output-path ./lighthouse-report.html
 
       - name: Deploy to AWS S3
         uses: jakejarvis/s3-sync-action@master
@@ -104,3 +111,10 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
+      - name: Invalidate CloudFront distribution
+        run: |
+          aws cloudfront create-invalidation --distribution-id EAISMBCX0HZEH --paths "/*"
+        env:
+          AWS_REGION: 'us-east-1'
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
