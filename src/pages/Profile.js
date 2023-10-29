@@ -1,4 +1,6 @@
 // Import statements
+
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from 'react';
 import { useAuth0, withAuthenticationRequired } from '@auth0/auth0-react';
 import axios from 'axios';
@@ -80,61 +82,71 @@ const Profile = () => {
   return (
 
     <div className="min-h-screen bg-blue-100">
-      <Barra />
-      <div className="flex justify-center pt-3 space-x-5 mb-5">
-        {/* Profile Information Box */}
-        <div className="flex flex-col items-center">
-          <div className="bg-white border border-gray-200 rounded-lg shadow-md p-5">
-            <h2 className="text-xl font-semibold mb-6 justify-center">Informacion Perfil</h2>
-
-            <div className="flex justify-center mb-4">
-              <img src={user.picture} alt={user.name} className="rounded-full" />
-            </div>
-
-            <div className="p-2 items-center mb-4">
-              <p className="text-lg">{user.name}</p>
-            </div>
-            <div className="flex justify-center">
-              <button
-                className="text-white bg-blue-500 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                onClick={() => window.location.href = '/transactions'}
-              >
-                Mis transacciones 🤑
-              </button>
-            </div>
-            <div className="py-3">
-              <label className="flex justify-center text-sm font-medium text-gray-700">
-                Activar notificaciones:
-                <input
-                  type="checkbox"
-                  checked={notificationsEnabled}
-                  onChange={handleNotificationsChange}
-                  className="ml-2 form-checkbox"
-                />
-              </label>
-
-              <button onClick={submitNotificationSettings} className="flex justify-center text-white bg-blue-500 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                Guardar 
-              </button>
-            </div>
-          </div>
+  <Barra />
+  <div className="flex justify-center pt-3 space-x-5 mb-5">
+    {/* Profile Information Box */}
+    <div className="flex flex-col items-center">
+      <div className="bg-white border border-gray-200 rounded-lg shadow-md p-5">
+        <h2 className="flex text-xl font-semibold mb-6 justify-center">Información Perfil</h2>
+        
+        <div className="flex justify-center mb-4">
+          <img src={user.picture} alt={user.name} className="rounded-full" />
         </div>
-        {/* Stocks Div */}
-        <div className="flex flex-col items-center">
-          <StocksDiv />
+        
+        <div className="p-2 items-center mb-4">
+          <p className="text-lg">{user.name}</p>
+        </div>
+        
+        <div className="flex justify-center">
+          <button
+            className="text-white bg-blue-500 hover-bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            onClick={() => window.location.href = '/transactions'}
+          >
+            Mis transacciones 🤑
+          </button>
+        </div>
+        
+        <div className='flex justify-center' style={{ marginBottom: '10px' }}>
+          <button className="text-white bg-blue-500 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+            <a href="/predictions">Mis predicciones 📈</a>
+          </button>
+        </div>
+        
+        <div className="py-3">
+          <label className="flex justify-center text-sm font-medium text-gray-700">
+            Activar notificaciones:
+            <input
+              type="checkbox"
+              checked={notificationsEnabled}
+              onChange={handleNotificationsChange}
+              className="ml-2 form-checkbox"
+            />
+          </label>
+          
+          <button onClick={submitNotificationSettings} className="flex justify-center text-white bg-blue-500 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover-bg-blue-700 dark:focus:ring-blue-800">
+            Guardar
+          </button>
         </div>
       </div>
-
-      <div className="flex justify-center mb-8">
-        <button
-          onClick={() => window.location.href = '/'}
-          className="text-white bg-blue-500 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-        >
-          Volver al inicio
-        </button>
-      </div>
-      <Footer />
     </div>
+    
+    {/* Stocks Div */}
+    <div className="flex flex-col items-center">
+      <StocksDiv />
+    </div>
+  </div>
+  
+  <div className="flex justify-center mb-8">
+    <button
+      onClick={() => window.location.href = '/'}
+      className="text-white bg-blue-500 hover-bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover-bg-blue-700 dark:focus:ring-blue-800"
+    >
+      Volver al inicio
+    </button>
+  </div>
+  
+  <Footer />
+</div>
   );
 };
 

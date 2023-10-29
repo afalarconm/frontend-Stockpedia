@@ -4,7 +4,7 @@ import Barra from '../components/navbar';
 import { useAuth0, withAuthenticationRequired } from '@auth0/auth0-react';
 
 
-const API_URL = 'http://localhost:3000';
+const API_URL = 'https://stockpedia.me';
 
 const BuyingProcess = () => {
     const [loading, setLoading] = useState(true);

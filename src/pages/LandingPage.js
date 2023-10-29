@@ -6,7 +6,7 @@ import 'tailwindcss/tailwind.css';
 import Barra from '../components/navbar';
 import Footer from '../components/footer';
 
-const API_URL = 'http://localhost:3000/stocks/';
+const API_URL = 'https://stockpedia.me/stocks/';
 
 
 const LandingPage = () => {
@@ -49,7 +49,7 @@ const LandingPage = () => {
         }
     }, []);
 
-    
+
     return (
         <div className="min-h-screen bg-blue-100">
             {/* Navbar */}
@@ -75,8 +75,8 @@ const LandingPage = () => {
                                     <tr
                                         key={index}
                                         className={`${index % 2 === 0 ? 'bg-blue-100' : 'bg-white'
-                                        } hover:bg-blue-400 ${selectedStock === stock.symbol ? 'bg-blue-300' : ''
-                                        }`}
+                                            } hover:bg-blue-400 ${selectedStock === stock.symbol ? 'bg-blue-300' : ''
+                                            }`}
                                         onClick={() => handleRowClick(stock.symbol)}
                                     >
                                         <td className="flex justify-center py-2 px-4 border">{stock.symbol}</td>
@@ -91,8 +91,8 @@ const LandingPage = () => {
                     </div>
                 </div>
             </div>
-                {/* Footer */}
-                <Footer />
+            {/* Footer */}
+            <Footer />
         </div>
     );
 };
