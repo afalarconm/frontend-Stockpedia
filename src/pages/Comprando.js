@@ -34,7 +34,7 @@ const BuyingProcess = () => {
                             Authorization: `Bearer ${token}`
                         };
 
-                        const boleta = await axios.post(`${API_URL}/boleta`, { token_ws: token_ws }, { headers: headers });
+                        const boleta = await axios.post(`${API_URL}/boleta-apigateway`, { token_ws: token_ws }, { headers: headers });
 
 
                         // Parse the json dump in the response body
