@@ -36,10 +36,11 @@ const BuyingProcess = () => {
 
                         const boleta = await axios.post(`${API_URL}/boleta`, { token_ws: token_ws }, { headers: headers });
 
+
                         // Parse the json dump in the response body
                         const boleta_url = boleta.data.body;
 
-                        console.log(boleta);
+                        console.log("boleta: "+boleta);
 
                         // Open boleta in new tab
                         window.open(boleta_url, '_blank');
@@ -71,7 +72,7 @@ const BuyingProcess = () => {
             // Redirects after 3 seconds
             redirectTimeout = setTimeout(() => {
                 window.location.href = '/profile';
-            }, 15000);
+            }, 40000);
         }
         if (error) {
             // Redirects after 5 seconds
