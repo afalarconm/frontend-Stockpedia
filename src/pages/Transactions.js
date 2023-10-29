@@ -40,13 +40,30 @@ const TransactionTable = () => {
 
     // Ensure transactions is not null before mapping
     const transactionRows = transactions ? transactions.map((transaction, index) => (
+        //console.log(transaction.symbol, transaction.links),
         <tr key={index} className="border-t">
-            <td className="px-4 py-2">{transaction.datetime}</td>
+            <td className="flex justify-center px-4 py-2">{new Date(transaction.datetime).toLocaleString()}</td>
             <td className="px-4 py-2">{transaction.symbol}</td>
             <td className="px-4 py-2">{transaction.quantity}</td>
             <td className="px-4 py-2">{transaction.state}</td>
             <td className="px-4 py-2">{transaction.ip}</td>
             <td className="px-4 py-2">{transaction.country_name}</td>
+            <td className="flex justify-center px-4 py-2">
+            {
+                transaction.state === "completed" ? (
+                    <button
+                        onClick={() => window.open(transaction.links)} // Opens the link in a new tab when clicking the button
+                        className="text-white bg-green-500 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-4 py-1.5 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+                    >
+                        <i className="fas fa-download pr-1"></i> Descargar Boleta
+                    </button>
+                ) : (
+                    <span>No hay boleta</span>
+                )
+                
+            }
+            </td>
+            
         </tr>
     )) : null;
 
@@ -61,6 +78,7 @@ const TransactionTable = () => {
                         <th className="px-4 py-2">Status</th>
                         <th className="px-4 py-2">IP</th>
                         <th className="px-4 py-2">País</th>
+                        <th className="px-4 py-2">Boleta</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -76,7 +94,7 @@ const Transactions = () => {
         <div className="min-h-screen bg-blue-100">
             <Barra />
             <div className="flex justify-center">
-                <div className="w-1/2 p-8">
+                <div className="w-full p-8">
                     <div className="bg-white border border-gray-200 rounded-lg shadow-md p-4">
                         <h2 className="text-xl font-semibold mb-4">Mis Transacciones</h2>
                         <TransactionTable />
