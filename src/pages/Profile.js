@@ -78,6 +78,7 @@ const Profile = () => {
     }
 
     fetchUserSettings(); // Fetch user settings from the server
+  // eslint-disable-next-line
   }, [getAccessTokenSilently, user]);
   return (
 

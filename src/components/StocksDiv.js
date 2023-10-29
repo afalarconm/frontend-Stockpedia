@@ -4,7 +4,7 @@ import axios from 'axios';
 import { TokenFetcher } from './TokenFetcher';
 import { useNavigate } from 'react-router-dom';
 
-const API_URL = 'https://stockpedia.me';
+const API_URL = 'https://api.stockpedia.me';
 
 const StocksDiv = () => {
   const { getAccessTokenSilently } = useAuth0();

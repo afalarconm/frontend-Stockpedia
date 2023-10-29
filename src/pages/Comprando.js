@@ -1,10 +1,12 @@
+/* eslint-disable no-unused-vars */
+
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Barra from '../components/navbar';
 import { useAuth0, withAuthenticationRequired } from '@auth0/auth0-react';
 
 
-const API_URL = 'https://stockpedia.me';
+const API_URL = 'https://api.stockpedia.me';
 
 const BuyingProcess = () => {
     const [loading, setLoading] = useState(true);
@@ -60,6 +62,7 @@ const BuyingProcess = () => {
         };
 
         validatePayment();
+// eslint-disable-next-line
     }, []);
 
     useEffect(() => {

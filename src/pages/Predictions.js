@@ -7,7 +7,7 @@ import { TokenFetcher } from '../components/TokenFetcher';
 import Barra from '../components/navbar';
 import PredictionChart from '../components/PredictionChart';
 
-const API_URL = 'https://stockpedia.me';
+const API_URL = 'https://api.stockpedia.me';
 
 const PredictionTable = ({ onOpenChart, prediction }) => {
     const [predictions, setPredictions] = useState(null);
