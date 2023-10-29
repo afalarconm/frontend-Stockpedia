@@ -6,44 +6,117 @@ Esta guía ofrece una explicación detallada de los procedimientos para la creac
 
 - **Nombre de la Implementación:** Funciones Serverless en AWS
 - **Eventos Desencadenantes:** Triggers HTTP, eventos programados, integraciones S3, entre otros.
-- **Compatibilidad de Sistema Operativo:** Independiente del sistema operativo, gestionado completamente en la nube.
+- **Compatibilidad de Sistema Operativo:** Es independiente del sistema operativo porque es gestionado completamente en la nube.
 
 ## 2. Proceso de Implementación
 
-### 2.1. Preparativos Iniciales
+### 2.1. Pre-requisitos
 
-Antes de iniciar, se requiere la instalación del Serverless Framework y la configuración de las credenciales de AWS. Esto es necesario para realizar cualquier acción en la nube de AWS.
+Antes de comenzar, prepare su entorno con lo siguiente:
 
-### 2.2. Creación y Despliegue del Servicio
+1. *Instalación del Serverless Framework:* Asegúrese de tener instalado el [Serverless Framework](https://www.serverless.com/framework/docs/getting-started/). Este marco de trabajo es fundamental para simplificar la creación, configuración y despliegue de aplicaciones serverless.
 
-La inicialización del proyecto se realiza con el comando específico de Serverless, seguido de la personalización del archivo `serverless.yml`. El despliegue en AWS se activa mediante el comando de despliegue del framework.
+2. *Credenciales de AWS:* Configure sus credenciales de AWS para permitir el despliegue y la gestión de servicios en su cuenta AWS. Puede hacerlo mediante el [CLI de AWS](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html) o configurando directamente en el dashboard de Serverless.
+   
+#### 2.2. Paso 1: Inicializar un Nuevo Servicio Serverless
 
-```bash
-sls create -n nombre-servicio -t aws-python3
-sls deploy --stage demo
-```
+1. *Estructura del comando:* Use el comando `sls create` con opciones específicas para definir y crear su servicio:
 
-### 2.3. Flujo Operativo para la Implementación de Capas
+    bash
+    sls create -n ayudantia-serverless -t aws-python3
+    
 
-Las capas personalizadas en Lambda permiten utilizar bibliotecas adicionales en nuestras funciones. El proceso incluye la preparación del entorno virtual, gestión de dependencias, y la subida de la capa a AWS.
+    - `-n` establece el nombre de su servicio.
+    - `-t` selecciona la plantilla predefinida para utilizar, que en este contexto es Python 3 para AWS.
 
-1. Creación y activación del entorno virtual.
-2. Organización de las dependencias en una estructura reconocible por AWS Lambda.
-3. Empaquetado de la capa y carga en AWS.
-4. Vinculación de la capa a la función serverless deseada.
+2. *Validación:* Después de ejecutar el comando, verifique que se haya creado una nueva carpeta con el nombre proporcionado, conteniendo archivos base del proyecto como `handler.py` y `serverless.yml`.
 
-### 2.4. Resumen de Escenarios de Flujo
+#### Paso 2: Desplegar el Servicio en AWS
 
-Diferentes escenarios pueden ocurrir durante la ejecución de funciones serverless, los cuales deben ser manejados apropiadamente:
+1. *Preparación:* Antes de desplegar, asegúrese de que su `serverless.yml` esté configurado correctamente según los recursos que desea crear en AWS.
 
-- **Flujo Estándar de Ejecución:** La función se ejecuta exitosamente sin errores internos.
-- **Errores de Ejecución:** Los errores durante la ejecución deben ser capturados y manejados, posiblemente con un sistema de reintentos.
-- **Problemas de Tiempo de Ejecución:** Si la función excede el tiempo máximo de ejecución, se detendrá forzosamente.
-- **Errores de Recursos Externos:** Fallas al interactuar con otros servicios AWS o sistemas externos.
+2. *Despliegue:*
 
-### 2.5. Fase de Pruebas
+    bash
+    sls deploy --stage demo
+    
 
-Es esencial realizar pruebas exhaustivas. AWS ofrece ambientes de "staging" para probar funciones serverless sin afectar la producción. Pruebas comunes incluyen invocaciones locales, monitorización de logs, y uso de herramientas de debugging.
+    - `--stage` define el entorno de despliegue, permitiendo diferenciar entre ambientes como desarrollo, producción, etc.
+
+3. *Confirmación:* Tras un despliegue exitoso, el CLI mostrará información sobre el servicio desplegado, incluyendo la URL de la función AWS Lambda recién creada.
+
+
+### Implementación de Capas Personalizadas
+
+Las capas personalizadas permiten compartir código y componentes entre varias funciones, facilitando la gestión y reduciendo redundancias.
+
+#### Paso 1: Configuración del Entorno Virtual de Python
+
+1. *Creación:*
+
+    bash
+    python3 -m venv test_venv
+    
+
+2. *Activación:* Asegúrese de activar el entorno virtual para instalar dependencias de manera aislada.
+
+    bash
+    # Para sistemas basados en Unix
+    source test_venv/bin/activate
+
+    # Para Windows
+    .\test_venv\Scripts\activate
+    
+
+3. *Verificación:* Confirme que su entorno virtual está activo comprobando la versión de Python.
+
+    bash
+    python --version
+    
+
+#### Paso 2: Manejo de Dependencias
+
+1. *Organización de Archivos:* Es esencial que las dependencias se instalen en una estructura de directorio reconocible por AWS Lambda.
+
+    bash
+    mkdir python
+    
+
+2. *Instalación de Paquetes:* Utilice `pip` para instalar las dependencias necesarias dentro del directorio creado.
+
+    bash
+    pip install requests -t python
+    
+
+#### Paso 3: Preparación y Carga de la Capa Personalizada
+
+1. *Creación de Archivo Zip:*
+
+    bash
+    # En sistemas basados en Unix
+    zip -r requests.zip python
+
+    # En Windows
+    powershell Compress-Archive python requests.zip
+    
+
+2. *Subida a AWS:*
+
+    - Navegue al panel de Lambda en su consola de AWS y seleccione "Capas" en el menú lateral.
+    - Elija "Crear capa" o "Agregar capa" y luego seleccione "Capa personalizada".
+    - Suba el archivo zip y complete los detalles necesarios para crear la capa.
+
+#### Paso 4: Asociación de la Capa a la Función Serverless
+
+1. *Configuración de la Función:*
+
+    - Desde el panel de funciones Lambda en AWS, seleccione su función.
+    - Vaya a la sección de capas y seleccione "Agregar capa".
+    - Elija la capa personalizada recién cargada y guarde los cambios.
+
+2. *Validación:* Realice pruebas invocando la función para asegurarse de que la capa se integra correctamente y que la función opera como se espera.
+
+
 
 ## 3. Herramientas Implicadas
 
@@ -52,4 +125,10 @@ Es esencial realizar pruebas exhaustivas. AWS ofrece ambientes de "staging" para
 - **Entornos Virtuales Python:** Los entornos virtuales en Python son fundamentales para gestionar dependencias y versiones de paquetes. [Documentación de Python venv](https://docs.python.org/3/library/venv.html)
 - **AWS Lambda:** Servicio de AWS que ejecuta código en respuesta a eventos, gestionando automáticamente los recursos. [AWS Lambda](https://aws.amazon.com/lambda/)
 
-Al seguir esta documentación, los desarrolladores pueden implementar, probar, y desplegar eficientemente funciones serverless en AWS, asegurando un sistema robusto y escalable.
+
+
+
+
+
+
+
