@@ -101,6 +101,8 @@ const Predictions = () => {
 
     const handleOpenChart = (prediction) => {
         setSelectedStockPrices(null);
+        setSelectedPrediction(null);
+        setSelectedStock(null);
         setSelectedPrediction(prediction);
         setSelectedStock(prediction.symbol);
     };

@@ -157,7 +157,7 @@ const StockDetailsPage = () => {
 
             console.log("Response from the server with data:", response.data);
             alert("La consulta de predicción está siendo calculada.");
-            window.location.href = '/profile';
+            window.location.href = '/predictions';
 
         } catch (error) {
             console.error("Error predicting stocks:", error);
