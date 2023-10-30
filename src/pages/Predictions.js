@@ -100,6 +100,13 @@ const Predictions = () => {
     const [selectedStock, setSelectedStock] = useState(null);
 
     const handleOpenChart = (prediction) => {
+
+        if (prediction.state === "pending") {
+            alert("La predicción aún no está lista");
+            window.location.reload();
+            return;
+        }
+
         setSelectedStockPrices(null);
         setSelectedPrediction(null);
         setSelectedStock(null);
