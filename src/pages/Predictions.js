@@ -58,7 +58,8 @@ const PredictionTable = ({ onOpenChart, prediction }) => {
             <td className="px-4 py-2">{prediction.original_price * prediction.quantity}</td>
             <td className="px-4 py-2">{prediction.expected_gain}</td>
             <td className="px-4 py-2">{prediction.state}</td>
-            <td className="px-4 py-2"><button className="text-white bg-blue-500 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            <td className="flex justify-center px-4 py-2"><button className="text-white bg-blue-500 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-4 py-1.5 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+
                 onClick={() => onOpenChart(prediction)}
             >
                 Ver Gráfico
@@ -99,9 +100,11 @@ const Predictions = () => {
     const [selectedStock, setSelectedStock] = useState(null);
 
     const handleOpenChart = (prediction) => {
+        setSelectedStockPrices(null);
         setSelectedPrediction(prediction);
         setSelectedStock(prediction.symbol);
     };
+    
 
     const handleStockData = async (stockData) => {
         const pricesArray = stockData.map(item => ({
