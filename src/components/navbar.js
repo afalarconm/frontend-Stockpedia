@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import 'tailwindcss/tailwind.css';
 import { useAuth0 } from "@auth0/auth0-react";
+import { TokenFetcher } from './TokenFetcher';
+import { jwtDecode } from 'jwt-decode';
+
 
 const LoginButton = () => {
   const { loginWithRedirect } = useAuth0();
@@ -22,54 +25,34 @@ const LogoutButton = () => {
   );
 };
 
-// const getCurrentUserMoney = async (getAccessTokenSilently) => {
-//   try {
 
-//     const apiUrl = 'https://api.stockpedia.me/my-wallet';
 
-//     const token = await TokenFetcher(getAccessTokenSilently);
-//     const headers = {
-//       Authorization: `Bearer ${token}`,
-//     };
-//     const response = await axios.get(apiUrl, { headers });
-
-//     return response.data[0].wallet;
-//   } catch (error) {
-//     console.error(error);
-//     return null;
-//   }
-// };
 
 const Barra = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { isAuthenticated, isLoading } = useAuth0();
+  const { isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0(); // getAccessTokenSilently obtained here
 
-  // useEffect(() => {
-  //   const INTERVAL_DURATION = 60000; // Tiempo en milisegundos
+  useEffect(() => {
+    const getPermission = async () => {
+      try {
+        const token = await TokenFetcher(getAccessTokenSilently);
+        console.log('Token:', token);
 
-  //   const fetchUserMoneyPeriodically = async () => {
-  //     try {
-  //       if (!isAuthenticated || isLoading) {
-  //         // El usuario no está autenticado o la autenticación aún está en curso, no hagas nada
-  //         return;
-  //       }
+        const jwtToken = token.replace('Bearer ', '');
+        const jwtDecoded = jwtDecode(token);
+        console.log('jwtDecoded:', jwtDecoded);
+        const permissions = jwtDecoded.permissions || [];
+        console.log('Permissions:', permissions);
 
-  //       const updatedUserMoney = isAuthenticated ? await getCurrentUserMoney(getAccessTokenSilently) : null;
+      } catch (error) {
+        console.error('Error fetching:', error);
+      }
+    };
 
-  //       if (updatedUserMoney !== null) {
-  //         setWalletBalance(updatedUserMoney);
-  //       }
-  //     } catch (error) {
-  //       console.error('Error al obtener el saldo de la billetera:', error);
-  //     }
-
-  //     setTimeout(fetchUserMoneyPeriodically, INTERVAL_DURATION);
-  //   };
-
-  //   if (isAuthenticated) {
-  //     fetchUserMoneyPeriodically();
-  //   }
-  // }, [getAccessTokenSilently, isAuthenticated, isLoading]);
+    if (typeof window !== 'undefined' && isAuthenticated) { // Added isAuthenticated check
+      getPermission();
+    }
+  }, [isAuthenticated, getAccessTokenSilently]); // Corrected dependencies
 
 
   if (isLoading) {
