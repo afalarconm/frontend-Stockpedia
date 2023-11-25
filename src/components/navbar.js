@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import 'tailwindcss/tailwind.css';
-import { User, useAuth0 } from "@auth0/auth0-react";
-import axios from 'axios';
-import { TokenFetcher, MgmTokenFetcher } from './TokenFetcher';
+import { useAuth0 } from "@auth0/auth0-react";
+import { TokenFetcher } from './TokenFetcher';
+import { jwtDecode } from 'jwt-decode';
 
 
 const LoginButton = () => {
@@ -25,80 +25,34 @@ const LogoutButton = () => {
   );
 };
 
-// const getCurrentUserMoney = async (getAccessTokenSilently) => {
-//   try {
 
-//     const apiUrl = 'https://api.stockpedia.me/my-wallet';
 
-//     const token = await TokenFetcher(getAccessTokenSilently);
-//     const headers = {
-//       Authorization: `Bearer ${token}`,
-//     };
-//     const response = await axios.get(apiUrl, { headers });
-
-//     return response.data[0].wallet;
-//   } catch (error) {
-//     console.error(error);
-//     return null;
-//   }
-// };
 
 const Barra = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { user, isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
+  const { isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
+  const [permissions, setPermissions] = useState([]); // State to store permissions
 
-  // useEffect(() => {
-  //   const INTERVAL_DURATION = 60000; // Tiempo en milisegundos
+  useEffect(() => {
+    const getPermission = async () => {
+      try {
+        const token = await TokenFetcher(getAccessTokenSilently);
+        console.log('Token:', token);
 
-  //   const fetchUserMoneyPeriodically = async () => {
-  //     try {
-  //       if (!isAuthenticated || isLoading) {
-  //         // El usuario no está autenticado o la autenticación aún está en curso, no hagas nada
-  //         return;
-  //       }
+        const jwtToken = token.replace('Bearer ', '');
+        const jwtDecoded = jwtDecode(jwtToken); // Corrected decoding
+        console.log('jwtDecoded:', jwtDecoded);
+        setPermissions(jwtDecoded.permissions || []); // Set permissions
 
-  //       const updatedUserMoney = isAuthenticated ? await getCurrentUserMoney(getAccessTokenSilently) : null;
-
-  //       if (updatedUserMoney !== null) {
-  //         setWalletBalance(updatedUserMoney);
-  //       }
-  //     } catch (error) {
-  //       console.error('Error al obtener el saldo de la billetera:', error);
-  //     }
-
-  //     setTimeout(fetchUserMoneyPeriodically, INTERVAL_DURATION);
-  //   };
-
-  //   if (isAuthenticated) {
-  //     fetchUserMoneyPeriodically();
-  //   }
-  // }, [getAccessTokenSilently, isAuthenticated, isLoading]);
-
-  // Check if logged user is an admin
-  const isAdmin = async (getAccessTokenSilently) => {
-      // Get MGMT_API_ACCESS_TOKEN 
-      const token = await TokenFetcher(getAccessTokenSilently);
-      const id_user = User.id;
-
-      var options = {
-        method: 'GET',
-        url: `https://dev-p1hsd7pae7fdnccq.us.auth0.com/api/v2/users/${id_user}/roles`,
-        headers: { authorization: `Bearer ${token}` }
-      };
-
-      axios.request(options).then(function (response) {
-        console.log(response.data);
+      } catch (error) {
+        console.error('Error fetching:', error);
       }
-      ).catch(function (error) {
-        console.error(error);
-      });
+    };
 
-  };
-  // Run the function once
-  isAdmin(getAccessTokenSilently);
-
-
-
+    if (typeof window !== 'undefined' && isAuthenticated) {
+      getPermission();
+    }
+  }, [isAuthenticated, getAccessTokenSilently]);
 
 
   if (isLoading) {
@@ -151,11 +105,17 @@ const Barra = () => {
                 </li>
               )}
               <li>
-                <a href="https://stockpedia.me" className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Sobre Nosotros</a>
+                <a href="/" className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Sobre Nosotros</a>
               </li>
               <li>
-                <a href="https://stockpedia.me" className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Contáctanos</a>
+                <a href="/" className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Contáctanos</a>
               </li>
+              {permissions.includes("buy:stocks") &&
+                <li>
+                  <a href="/subastas" className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Subastas</a>
+                </li>
+              }
+              
             </ul>
           </div>
         </div>
