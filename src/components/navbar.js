@@ -30,7 +30,8 @@ const LogoutButton = () => {
 
 const Barra = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0(); // getAccessTokenSilently obtained here
+  const { isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
+  const [permissions, setPermissions] = useState([]); // State to store permissions
 
   useEffect(() => {
     const getPermission = async () => {
@@ -39,20 +40,19 @@ const Barra = () => {
         console.log('Token:', token);
 
         const jwtToken = token.replace('Bearer ', '');
-        const jwtDecoded = jwtDecode(token);
+        const jwtDecoded = jwtDecode(jwtToken); // Corrected decoding
         console.log('jwtDecoded:', jwtDecoded);
-        const permissions = jwtDecoded.permissions || [];
-        console.log('Permissions:', permissions);
+        setPermissions(jwtDecoded.permissions || []); // Set permissions
 
       } catch (error) {
         console.error('Error fetching:', error);
       }
     };
 
-    if (typeof window !== 'undefined' && isAuthenticated) { // Added isAuthenticated check
+    if (typeof window !== 'undefined' && isAuthenticated) {
       getPermission();
     }
-  }, [isAuthenticated, getAccessTokenSilently]); // Corrected dependencies
+  }, [isAuthenticated, getAccessTokenSilently]);
 
 
   if (isLoading) {
@@ -105,11 +105,16 @@ const Barra = () => {
                 </li>
               )}
               <li>
-                <a href="https://stockpedia.me" className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Sobre Nosotros</a>
+                <a href="/" className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Sobre Nosotros</a>
               </li>
               <li>
-                <a href="https://stockpedia.me" className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Contáctanos</a>
+                <a href="/" className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Contáctanos</a>
               </li>
+              {permissions.includes("buy:stocks") && (
+              <li>
+                <a href="/" className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Vista admin</a>
+              </li>
+            )}
             </ul>
           </div>
         </div>
