@@ -26,8 +26,21 @@ const StockDetailsPage = () => {
     const [webpay_token, setWebpayToken] = useState(null);
     const [webpay_url, setWebpayURL] = useState(null);
     const [isJobmasterRunning, setIsJobmasterRunning] = useState(false);
+    const [AdminStocks, setAdminStocks] = useState([]);
 
     useEffect(() => {
+
+        // Fetch admin stocks
+        const getAdminStocks = async => {
+            try {
+                // Logica para obtener los stocks del admin
+                // setAdminStocks([Lo que sea que se retorne de la api])
+            }
+            catch (error) {
+                console.error('Error fetching admin stocks:', error);
+            }
+        }
+
 
         // Fetch user money
         const getCurrentUserMoney = async (getAccessTokenSilently) => {
@@ -115,6 +128,13 @@ const StockDetailsPage = () => {
 
         // Le pedimos al api el token y la url para redirigir a webpay
         try {
+
+            // Revisamos si la cantidad de stocks a comprar es mayor a la cantidad de stocks disponibles
+            if (quantity > AdminStocks) {
+                alert('¡Lo sentimos! No hay suficientes stocks disponibles para comprar.');
+                return;
+            }
+
             const token = await TokenFetcher(getAccessTokenSilently);
             const response = await axios.post(apiUrl, { symbol: stockData?.symbol, quantity: quantity, ip: ip, }, {
                 headers: {
@@ -197,6 +217,7 @@ const StockDetailsPage = () => {
                                 <p className="font-semibold">Precio: <span className="font-normal">{stockData.currentPrice}</span></p>
                                 <p className="font-semibold">Mercado: <span className="font-normal">{stockData.market}</span></p>
                                 <p className="font-semibold">Ultimo cambio: <span className="font-normal">{stockData.change}%</span></p>
+                                <p className='font-semibold'>Stocks disponibles para comprar en Stockpedia: <span className='font-normal'>{AdminStocks}</span> </p>
                             </div>
                         )}
                     </div>

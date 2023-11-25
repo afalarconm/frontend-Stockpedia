@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import 'tailwindcss/tailwind.css';
-import { useAuth0 } from "@auth0/auth0-react";
+import { User, useAuth0 } from "@auth0/auth0-react";
+import axios from 'axios';
+import { TokenFetcher, MgmTokenFetcher } from './TokenFetcher';
+
 
 const LoginButton = () => {
   const { loginWithRedirect } = useAuth0();
@@ -42,7 +45,7 @@ const LogoutButton = () => {
 
 const Barra = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { isAuthenticated, isLoading } = useAuth0();
+  const { user, isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
 
   // useEffect(() => {
   //   const INTERVAL_DURATION = 60000; // Tiempo en milisegundos
@@ -70,6 +73,32 @@ const Barra = () => {
   //     fetchUserMoneyPeriodically();
   //   }
   // }, [getAccessTokenSilently, isAuthenticated, isLoading]);
+
+  // Check if logged user is an admin
+  const isAdmin = async (getAccessTokenSilently) => {
+      // Get MGMT_API_ACCESS_TOKEN 
+      const token = await TokenFetcher(getAccessTokenSilently);
+      const id_user = User.id;
+
+      var options = {
+        method: 'GET',
+        url: `https://dev-p1hsd7pae7fdnccq.us.auth0.com/api/v2/users/${id_user}/roles`,
+        headers: { authorization: `Bearer ${token}` }
+      };
+
+      axios.request(options).then(function (response) {
+        console.log(response.data);
+      }
+      ).catch(function (error) {
+        console.error(error);
+      });
+
+  };
+  // Run the function once
+  isAdmin(getAccessTokenSilently);
+
+
+
 
 
   if (isLoading) {
