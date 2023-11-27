@@ -8,6 +8,8 @@ import Transactions from './pages/Transactions';
 import Comprando from './pages/Comprando';
 import Predictions from './pages/Predictions';
 import AdminDashboard from './pages/AdminPage';
+import OffersPage from './pages/Subastas';
+import AuctionDetailsPage from './pages/AuctionDetailsPage';
 
 const App = () => {
   return (
@@ -20,8 +22,9 @@ const App = () => {
         <Route path='/comprando' element={<Comprando />} />
         <Route path='/predictions' element={<Predictions />} />
         <Route path='/admin' element={<AdminDashboard />} />
-
-        
+        <Route path='/admin' element={<AdminDashboard />} />
+        <Route path='/subastas' element={<OffersPage />} />
+        <Route path='/offer-details' element={<AuctionDetailsPage />} />
       </Routes>
     </Router>
   );

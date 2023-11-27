@@ -8,6 +8,8 @@ import Barra from '../components/navbar';
 import StockChart from '../components/StockChart';
 import { TokenFetcher } from '../components/TokenFetcher';
 import { jwtDecode } from 'jwt-decode';
+import { useNavigate } from 'react-router-dom';
+
 
 // Import PNG assets from components folder
 import WebpayLogo from '../components/2.WebpayPlus_FN_80px.png';
@@ -32,6 +34,8 @@ const StockDetailsPage = () => {
     const [isJobmasterRunning, setIsJobmasterRunning] = useState(false);
     const [AdminStocks, setAdminStocks] = useState([]);
     const [permissions, setPermissions] = useState([]); // State to store permissions
+    const navigate = useNavigate();
+
 
 
     useEffect(() => {
@@ -78,15 +82,7 @@ const StockDetailsPage = () => {
             }
         };
 
-        // Fetch stock data
-        const fetchStockData = async () => {
-            try {
-                const response = await axios.get(`${API_URL}/stocks/${selectedStock}`);
-                handleStockData(response.data);
-            } catch (error) {
-                console.error('Error fetching stock data:', error);
-            }
-        };
+
 
         if (typeof window !== 'undefined') {
             fetchStockData();
@@ -94,6 +90,16 @@ const StockDetailsPage = () => {
             getCurrentUserMoney(getAccessTokenSilently);
         }
     }, [selectedStock, getAccessTokenSilently]);
+
+    // Fetch stock data
+    const fetchStockData = async () => {
+        try {
+            const response = await axios.get(`${API_URL}/stocks/${selectedStock}`);
+            handleStockData(response.data);
+        } catch (error) {
+            console.error('Error fetching stock data:', error);
+        }
+    };
 
     // Set stock data
     const handleStockData = (data) => {
@@ -117,20 +123,20 @@ const StockDetailsPage = () => {
     // Handle buy stock with Webpay
     const handleBuyStock = async (event) => {
         event.preventDefault();
-        console.log('Quantity to buy:', quantity);
+        console.log('Quantity to buy:', quantity3);
         const apiUrl = `${API_URL}/stocks/requests`;
 
         // Le pedimos al api el token y la url para redirigir a webpay
         try {
 
             // Revisamos si la cantidad de stocks a comprar es mayor a la cantidad de stocks disponibles
-            if (quantity > stockData.stocksAdmin) {
+            if (quantity3 > stockData.stocksAdmin) {
                 alert('¡Lo sentimos! No hay suficientes stocks disponibles para comprar.');
                 return;
             }
 
             const token = await TokenFetcher(getAccessTokenSilently);
-            const response = await axios.post(apiUrl, { symbol: stockData?.symbol, quantity: quantity, ip: ip, }, {
+            const response = await axios.post(apiUrl, { symbol: stockData?.symbol, quantity: quantity3, ip: ip, }, {
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
@@ -169,6 +175,7 @@ const StockDetailsPage = () => {
             });
 
             console.log("Response from the server data:", response.data);
+            fetchStockData();
 
             // displayAlert(response);
         } catch (error) {
@@ -179,15 +186,39 @@ const StockDetailsPage = () => {
     
     const handleSubastaAdmin = async (event) => {
         event.preventDefault();
-        // Logic for Subasta Admin
-        // Similar to handleBuyStock but with specific logic for Subasta Admin
+        console.log("Subasta admin quantity", quantity2);
+        console.log("Subasta stockData.stocksAdmin", stockData.stocksAdmin);
+        const apiUrl = `${API_URL}/auctions/create-offer`;
+
+        // Le pedimos al api el token y la url para redirigir a webpay
+        try {
+
+            if (quantity2 > stockData.stocksAdmin) {
+                alert('¡Lo sentimos! No hay suficientes stocks disponibles para subastar.');
+                return;
+            }
+            const token = await TokenFetcher(getAccessTokenSilently);
+            const response = await axios.post(apiUrl, { stock_id: stockData?.symbol, quantity: quantity2 }, {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                }
+            });
+
+            console.log("Response from the server data:", response.data);
+            navigate('/subastas');
+            // displayAlert(response);
+        } catch (error) {
+            console.error("Error subasting stocks:", error);
+            alert('Ocurrio un error al subastar Stocks, por favor revisa la cantidad ingresada.');
+        }
     };
     
 
     // Handle predict stock
     const handlePredictStock = async (event) => {
         event.preventDefault();
-        console.log('Quantity to predict:', quantity);
+        console.log('Quantity to predict:', quantity4);
         console.log('Stock symbol:', stockData?.symbol);
         console.log("Time: ", time);
         const apiUrl = `${API_URL}/predict`;
@@ -195,7 +226,7 @@ const StockDetailsPage = () => {
         // Le pedimos al api el token
         try {
             const token = await TokenFetcher(getAccessTokenSilently);
-            const response = await axios.post(apiUrl, { symbol: stockData?.symbol, quantity: quantity, time: time }, {
+            const response = await axios.post(apiUrl, { symbol: stockData?.symbol, quantity: quantity4, time: time }, {
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
@@ -306,7 +337,7 @@ const StockDetailsPage = () => {
 
                                     <form onSubmit={handleSubastaAdmin}>
                                         <div className="mb-3">
-                                            <label htmlFor="quantity" className="block mb-2 text-base font-semibold text-gray-900 dark:text-white">¿Cuantos Stocks quieres comprar?</label>
+                                            <label htmlFor="quantity" className="block mb-2 text-base font-semibold text-gray-900 dark:text-white">¿Cuantos Stocks quieres subastar?</label>
 
                                             <div className="relative">
                                                 <div className="absolute inset-y-0 left-0 flex items-center p-2 pointer-events-none">
@@ -321,15 +352,7 @@ const StockDetailsPage = () => {
                                                     className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-8 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-200 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                                     value={quantity2}
                                                     onChange={(e) => setQuantity2(e.target.value)}
-                                                />  
-                                                <input
-                                                    type="text"
-                                                    id="precio"
-                                                    placeholder="Precio"
-                                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-8 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-200 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                                    value={quantity3}
-                                                    onChange={(e) => setQuantity3(e.target.value)}
-                                                />                                    </div>
+                                                />  </div>
                                         </div>
 
                                         <div className="mb-2">
@@ -359,7 +382,7 @@ const StockDetailsPage = () => {
                                                     className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-8 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-200 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                                     placeholder="0"
                                                     value={quantity3}
-                                                    onChange={(e) => setQuantity4(e.target.value)}
+                                                    onChange={(e) => setQuantity3(e.target.value)}
                                                 />                                    </div>
                                         </div>
                                         
@@ -413,8 +436,8 @@ const StockDetailsPage = () => {
                                                 id="quantity"
                                                 className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-8 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-200 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                                 placeholder="0"
-                                                value={quantity}
-                                                onChange={(e) => setQuantity(e.target.value)}
+                                                value={quantity4}
+                                                onChange={(e) => setQuantity4(e.target.value)}
                                             />                                    </div>
 
                                         <label htmlFor="quantity" className="block mb-2 text-base font-semibold text-gray-500 dark:text-white">2. Ingresa cantidad de días a futuro a predecir</label>
