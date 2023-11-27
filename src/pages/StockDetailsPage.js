@@ -40,18 +40,6 @@ const StockDetailsPage = () => {
 
     useEffect(() => {
 
-        // Fetch admin stocks
-        const getAdminStocks = async => {
-            try {
-                // Logica para obtener los stocks del admin
-                // setAdminStocks([Lo que sea que se retorne de la api])
-            }
-            catch (error) {
-                console.error('Error fetching admin stocks:', error);
-            }
-        }
-
-
         // Fetch user money
         const getCurrentUserMoney = async (getAccessTokenSilently) => {
             try {
@@ -89,7 +77,7 @@ const StockDetailsPage = () => {
             fetchIp();
             getCurrentUserMoney(getAccessTokenSilently);
         }
-    }, [selectedStock, getAccessTokenSilently]);
+    }, [selectedStock, getAccessTokenSilently, fetchStockData]);
 
     // Fetch stock data
     const fetchStockData = async () => {
