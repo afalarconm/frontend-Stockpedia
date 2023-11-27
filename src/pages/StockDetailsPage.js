@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAuth0 } from "@auth0/auth0-react";
 import axios from 'axios';
@@ -36,9 +36,19 @@ const StockDetailsPage = () => {
     const [permissions, setPermissions] = useState([]); // State to store permissions
     const navigate = useNavigate();
 
-
+    // Memoize fetchStockData
+    const fetchStockData = useCallback(async () => {
+    try {
+        const response = await axios.get(`${API_URL}/stocks/${selectedStock}`);
+        handleStockData(response.data);
+    } catch (error) {
+        console.error('Error fetching stock data:', error);
+    }
+    }, [selectedStock, API_URL]);
 
     useEffect(() => {
+
+ 
 
         // Fetch user money
         const getCurrentUserMoney = async (getAccessTokenSilently) => {
@@ -70,15 +80,7 @@ const StockDetailsPage = () => {
             }
         };
 
-            // Fetch stock data
-        const fetchStockData = async () => {
-            try {
-                const response = await axios.get(`${API_URL}/stocks/${selectedStock}`);
-                handleStockData(response.data);
-            } catch (error) {
-                console.error('Error fetching stock data:', error);
-            }
-        };
+
 
         if (typeof window !== 'undefined') {
             fetchStockData();
