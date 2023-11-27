@@ -7,7 +7,6 @@ import Profile from './pages/Profile';
 import Transactions from './pages/Transactions';
 import Comprando from './pages/Comprando';
 import Predictions from './pages/Predictions';
-import AdminDashboard from './pages/AdminPage';
 import OffersPage from './pages/Subastas';
 import AuctionDetailsPage from './pages/AuctionDetailsPage';
 
