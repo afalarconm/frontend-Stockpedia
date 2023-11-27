@@ -44,7 +44,7 @@ const StockDetailsPage = () => {
     } catch (error) {
         console.error('Error fetching stock data:', error);
     }
-    }, [selectedStock, API_URL]);
+    }, [selectedStock]);
 
     useEffect(() => {
 
