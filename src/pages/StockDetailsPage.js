@@ -70,7 +70,15 @@ const StockDetailsPage = () => {
             }
         };
 
-
+            // Fetch stock data
+        const fetchStockData = async () => {
+            try {
+                const response = await axios.get(`${API_URL}/stocks/${selectedStock}`);
+                handleStockData(response.data);
+            } catch (error) {
+                console.error('Error fetching stock data:', error);
+            }
+        };
 
         if (typeof window !== 'undefined') {
             fetchStockData();
@@ -79,15 +87,7 @@ const StockDetailsPage = () => {
         }
     }, [selectedStock, getAccessTokenSilently, fetchStockData]);
 
-    // Fetch stock data
-    const fetchStockData = async () => {
-        try {
-            const response = await axios.get(`${API_URL}/stocks/${selectedStock}`);
-            handleStockData(response.data);
-        } catch (error) {
-            console.error('Error fetching stock data:', error);
-        }
-    };
+
 
     // Set stock data
     const handleStockData = (data) => {
