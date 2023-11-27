@@ -21,8 +21,6 @@ const App = () => {
         <Route path='/transactions' element={<Transactions />} />
         <Route path='/comprando' element={<Comprando />} />
         <Route path='/predictions' element={<Predictions />} />
-        <Route path='/admin' element={<AdminDashboard />} />
-        <Route path='/admin' element={<AdminDashboard />} />
         <Route path='/subastas' element={<OffersPage />} />
         <Route path='/offer-details' element={<AuctionDetailsPage />} />
       </Routes>
