@@ -14,7 +14,7 @@ import { useNavigate } from 'react-router-dom';
 // Import PNG assets from components folder
 import WebpayLogo from '../components/2.WebpayPlus_FN_80px.png';
 
-const API_URL = 'http://localhost:3000'; //https://api.stockpedia.me';
+const API_URL = 'https://api.stockpedia.me'
 
 const StockDetailsPage = () => {
     const [stockData, setStockData] = useState(null);
