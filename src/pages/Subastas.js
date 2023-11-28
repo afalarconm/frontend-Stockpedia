@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/navbar';
 import Footer from '../components/footer';
 
-const API_URL = 'http://localhost:3000'; //https://api.stockpedia.me';
+const API_URL = 'https://api.stockpedia.me'; //https://api.stockpedia.me';
 
 const OffersPage = () => {
     const [offers, setOffers] = useState([]);
