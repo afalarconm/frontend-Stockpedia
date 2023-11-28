@@ -29,7 +29,7 @@ const LandingPage = () => {
     useEffect(() => {
         const fetchStockData = async () => {
             try {
-                const response = await axios.get(API_URL);
+                const response = await axios.get(f`${API_URL}/stocks`);
                 const formattedData = response.data.map(item => ({
                     symbol: item.symbol,
                     companyName: item.shortname,
