@@ -84,13 +84,12 @@ const AuctionDetailsPage = () => {
                 try {
                     const token = await getAccessTokenSilently();
                     const headers = { Authorization: `Bearer ${token}` };
-                    const response = await axios.get(`${API_URL}/auctions/all-proposals`, {
+                    const response = await axios.get(`${API_URL}/auctions/${selectedOferta.auction_id}/proposals`, {
                         headers,
                         params: { auction_id: selectedOferta.auction_id } // Assuming selectedOferta contains auction_id
                     });
                     
                     setAuctionDetails(response.data);
-                    console.log("/auctions/all-proposals", response.data);
                 } catch (error) {
                     console.error('Error fetching auction details:', error);
                 }
