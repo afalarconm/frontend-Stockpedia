@@ -1,17 +1,20 @@
 /* eslint-disable no-unused-vars */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAuth0 } from "@auth0/auth0-react";
 import axios from 'axios';
 import Barra from '../components/navbar';
 import StockChart from '../components/StockChart';
 import { TokenFetcher } from '../components/TokenFetcher';
+import { jwtDecode } from 'jwt-decode';
+import { useNavigate } from 'react-router-dom';
+
 
 // Import PNG assets from components folder
 import WebpayLogo from '../components/2.WebpayPlus_FN_80px.png';
 
-const API_URL = 'https://api.stockpedia.me';
+const API_URL = 'http://localhost:3000'; //https://api.stockpedia.me';
 
 const StockDetailsPage = () => {
     const [stockData, setStockData] = useState(null);
@@ -21,13 +24,31 @@ const StockDetailsPage = () => {
     const [selectedStockPrices, setSelectedStockPrices] = useState([]);
     const [ip, setIp] = useState(null);
     const [quantity, setQuantity] = useState('');
+    const [quantity2, setQuantity2] = useState('');
+    const [quantity3, setQuantity3] = useState('');
+    const [quantity4, setQuantity4] = useState('');
     const [time, setTime] = useState('');
     const [walletBalance, setWalletBalance] = useState(null);
     const [webpay_token, setWebpayToken] = useState(null);
     const [webpay_url, setWebpayURL] = useState(null);
     const [isJobmasterRunning, setIsJobmasterRunning] = useState(false);
+    const [AdminStocks, setAdminStocks] = useState([]);
+    const [permissions, setPermissions] = useState([]); // State to store permissions
+    const navigate = useNavigate();
+
+    // Memoize fetchStockData
+    const fetchStockData = useCallback(async () => {
+    try {
+        const response = await axios.get(`${API_URL}/stocks/${selectedStock}`);
+        handleStockData(response.data);
+    } catch (error) {
+        console.error('Error fetching stock data:', error);
+    }
+    }, [selectedStock]);
 
     useEffect(() => {
+
+ 
 
         // Fetch user money
         const getCurrentUserMoney = async (getAccessTokenSilently) => {
@@ -39,7 +60,7 @@ const StockDetailsPage = () => {
                 };
 
                 const response = await axios.get(apiUrl, { headers });
-                console.log('Response from the server:', response.data);
+                //console.log('Response from the server:', response.data);
 
                 setWalletBalance(response.data[0].wallet);
 
@@ -59,64 +80,53 @@ const StockDetailsPage = () => {
             }
         };
 
-        // Fetch stock data
-        const fetchStockData = async () => {
-            try {
-                const response = await axios.get(`${API_URL}/stocks/${selectedStock}`);
-                handleStockData(response.data);
-            } catch (error) {
-                console.error('Error fetching stock data:', error);
-            }
-        };
+
 
         if (typeof window !== 'undefined') {
             fetchStockData();
             fetchIp();
             getCurrentUserMoney(getAccessTokenSilently);
         }
-    }, [selectedStock, getAccessTokenSilently]);
+    }, [selectedStock, getAccessTokenSilently, fetchStockData]);
+
+
 
     // Set stock data
     const handleStockData = (data) => {
-        const pricesArray = data.map(item => ({
+        const pricesArray = data.stockDetails.map(item => ({
             x: new Date(item.datetime).getTime(),
             y: item.price
         }));
-
+    
         setSelectedStockPrices(pricesArray);
-
+    
         setStockData({
-            companyName: data[0].shortname,
+            companyName: data.stockDetails[0].shortname,
             currentPrice: pricesArray[pricesArray.length - 1].y,
-            market: data[0].source,
+            market: data.stockDetails[0].source,
             change: pricesArray[pricesArray.length - 1].y - pricesArray[0].y,
-            symbol: data[0].symbol
+            symbol: data.stockDetails[0].symbol,
+            stocksAdmin: data.adminStockQuantity
         });
     };
-
-    // Display alert to user
-    const displayAlert = (response) => {
-        console.log('Response from the server:', response);
-        if (response.data === "OK") {
-            alert('Compraste Stocks!');
-            window.location.href = '/profile';
-
-        } else {
-            alert('Error buying stocks. Please try again later.');
-            window.location.href = '/';
-        }
-    };
-
+    
     // Handle buy stock with Webpay
     const handleBuyStock = async (event) => {
         event.preventDefault();
-        console.log('Quantity to buy:', quantity);
+        console.log('Quantity to buy:', quantity3);
         const apiUrl = `${API_URL}/stocks/requests`;
 
         // Le pedimos al api el token y la url para redirigir a webpay
         try {
+
+            // Revisamos si la cantidad de stocks a comprar es mayor a la cantidad de stocks disponibles
+            if (quantity3 > stockData.stocksAdmin) {
+                alert('¡Lo sentimos! No hay suficientes stocks disponibles para comprar.');
+                return;
+            }
+
             const token = await TokenFetcher(getAccessTokenSilently);
-            const response = await axios.post(apiUrl, { symbol: stockData?.symbol, quantity: quantity, ip: ip, }, {
+            const response = await axios.post(apiUrl, { symbol: stockData?.symbol, quantity: quantity3, ip: ip, }, {
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
@@ -137,10 +147,68 @@ const StockDetailsPage = () => {
         }
     };
 
+    const handleCompraAdmin = async (event) => {
+        event.preventDefault();
+        console.log("Compra admin quantity", quantity);
+        const apiUrl = `${API_URL}/stocks/admin/compra`;
+
+        // Le pedimos al api el token y la url para redirigir a webpay
+        try {
+
+
+            const token = await TokenFetcher(getAccessTokenSilently);
+            const response = await axios.post(apiUrl, { symbol: stockData?.symbol, quantity: quantity}, {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                }
+            });
+
+            console.log("Response from the server data:", response.data);
+            fetchStockData();
+
+            // displayAlert(response);
+        } catch (error) {
+            console.error("Error buying stocks:", error);
+            alert('Ocurrio un error al comprar Stocks, por favor revisa la cantidad ingresada.');
+        }
+    };
+    
+    const handleSubastaAdmin = async (event) => {
+        event.preventDefault();
+        console.log("Subasta admin quantity", quantity2);
+        console.log("Subasta stockData.stocksAdmin", stockData.stocksAdmin);
+        const apiUrl = `${API_URL}/auctions/create-offer`;
+
+        // Le pedimos al api el token y la url para redirigir a webpay
+        try {
+
+            if (quantity2 > stockData.stocksAdmin) {
+                alert('¡Lo sentimos! No hay suficientes stocks disponibles para subastar.');
+                return;
+            }
+            const token = await TokenFetcher(getAccessTokenSilently);
+            const response = await axios.post(apiUrl, { stock_id: stockData?.symbol, quantity: quantity2 }, {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                }
+            });
+
+            console.log("Response from the server data:", response.data);
+            navigate('/subastas');
+            // displayAlert(response);
+        } catch (error) {
+            console.error("Error subasting stocks:", error);
+            alert('Ocurrio un error al subastar Stocks, por favor revisa la cantidad ingresada.');
+        }
+    };
+    
+
     // Handle predict stock
     const handlePredictStock = async (event) => {
         event.preventDefault();
-        console.log('Quantity to predict:', quantity);
+        console.log('Quantity to predict:', quantity4);
         console.log('Stock symbol:', stockData?.symbol);
         console.log("Time: ", time);
         const apiUrl = `${API_URL}/predict`;
@@ -148,7 +216,7 @@ const StockDetailsPage = () => {
         // Le pedimos al api el token
         try {
             const token = await TokenFetcher(getAccessTokenSilently);
-            const response = await axios.post(apiUrl, { symbol: stockData?.symbol, quantity: quantity, time: time }, {
+            const response = await axios.post(apiUrl, { symbol: stockData?.symbol, quantity: quantity4, time: time }, {
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
@@ -179,6 +247,27 @@ const StockDetailsPage = () => {
     }, [webpay_token, webpay_url]);
 
     useEffect(() => {
+        const getPermission = async () => {
+          try {
+            const token = await TokenFetcher(getAccessTokenSilently);
+            console.log('Token:', token);
+    
+            const jwtToken = token.replace('Bearer ', '');
+            const jwtDecoded = jwtDecode(jwtToken); // Corrected decoding
+            console.log('jwtDecoded:', jwtDecoded);
+            setPermissions(jwtDecoded.permissions || []); // Set permissions
+    
+          } catch (error) {
+            console.error('Error fetching:', error);
+          }
+        };
+    
+        if (typeof window !== 'undefined' && isAuthenticated) {
+          getPermission();
+        }
+      }, [isAuthenticated, getAccessTokenSilently]);
+
+    useEffect(() => {
         axios.get(`${API_URL}/heartbeat`)
             .then(() => setIsJobmasterRunning(true))
             .catch(() => setIsJobmasterRunning(false));
@@ -197,43 +286,109 @@ const StockDetailsPage = () => {
                                 <p className="font-semibold">Precio: <span className="font-normal">{stockData.currentPrice}</span></p>
                                 <p className="font-semibold">Mercado: <span className="font-normal">{stockData.market}</span></p>
                                 <p className="font-semibold">Ultimo cambio: <span className="font-normal">{stockData.change}%</span></p>
+                                <p className='font-semibold'>Stocks disponibles para comprar en Stockpedia: <span className='font-normal'>{stockData.stocksAdmin}</span> </p>
                             </div>
                         )}
                     </div>
                     {isAuthenticated && (
                         <>
                             <div className="bg-white border border-gray-200 rounded-lg shadow-md p-4">
-                                <form onSubmit={handleBuyStock}>
-                                    <div className="mb-3">
-                                        <label htmlFor="quantity" className="block mb-2 text-base font-semibold text-gray-900 dark:text-white">¿Cuantos Stocks quieres comprar?</label>
+                                {permissions.includes("buy:stocks") ? (
+                                    <>
+                                    <form onSubmit={handleCompraAdmin}>
+                                        <div className="mb-3">
+                                            <label htmlFor="quantity" className="block mb-2 text-base font-semibold text-gray-900 dark:text-white">¿Cuantos Stocks quieres comprar?</label>
 
-                                        <div className="relative">
-                                            <div className="absolute inset-y-0 left-0 flex items-center p-2 pointer-events-none">
-                                                <svg className="w-5 h-5 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24">
-                                                    <path stroke="currentColor" strokeLinecap="round" strokeWidth="2" d="M1 12c1.5 1.5 5.25 3 9 3s7.5-1.5 9-3m-9-1h.01M2 19h16a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1ZM14 5V3a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v2h8Z"></path>
-                                                </svg>
-                                            </div>
-                                            <input
-                                                type="text"
-                                                id="quantity"
-                                                className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-8 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-200 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                                placeholder="0"
-                                                value={quantity}
-                                                onChange={(e) => setQuantity(e.target.value)}
-                                            />                                    </div>
-                                    </div>
-                                    <div className="mb-2">
-                                        <button
-                                            type="submit"
-                                            className="flex items-center justify-center w-full px-4 py-3 rounded-md bg-green-500 text-white font-semibold text-sm hover:bg-green-600 focus:outline-none focus:bg-green-600"
-                                        >
-                                            Pagar con
-                                            <img src={WebpayLogo} alt="Webpay" className="w-auto mr-2 ml-1" />
-                                        </button>
-                                    </div>
-                                </form>
+                                            <div className="relative">
+                                                <div className="absolute inset-y-0 left-0 flex items-center p-2 pointer-events-none">
+                                                    <svg className="w-5 h-5 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24">
+                                                        <path stroke="currentColor" strokeLinecap="round" strokeWidth="2" d="M1 12c1.5 1.5 5.25 3 9 3s7.5-1.5 9-3m-9-1h.01M2 19h16a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1ZM14 5V3a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v2h8Z"></path>
+                                                    </svg>
+                                                </div>
+                                                <input
+                                                    type="text"
+                                                    id="quantity"
+                                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-8 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-200 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                    placeholder="0"
+                                                    value={quantity}
+                                                    onChange={(e) => setQuantity(e.target.value)}
+                                                />                                    </div>
+                                        </div>
+                                        
+                                        <div className="mb-2">
+                                            <button
+                                                type="submit"
+                                                className="flex items-center justify-center w-full px-4 py-3 rounded-md bg-green-500 text-white font-semibold text-sm hover:bg-green-600 focus:outline-none focus:bg-green-600"
+                                            >
+                                                Comprar
+                                            </button>
+                                        </div>
+                                    </form>
 
+                                    <form onSubmit={handleSubastaAdmin}>
+                                        <div className="mb-3">
+                                            <label htmlFor="quantity" className="block mb-2 text-base font-semibold text-gray-900 dark:text-white">¿Cuantos Stocks quieres subastar?</label>
+
+                                            <div className="relative">
+                                                <div className="absolute inset-y-0 left-0 flex items-center p-2 pointer-events-none">
+                                                    <svg className="w-5 h-5 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24">
+                                                        <path stroke="currentColor" strokeLinecap="round" strokeWidth="2" d="M1 12c1.5 1.5 5.25 3 9 3s7.5-1.5 9-3m-9-1h.01M2 19h16a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1ZM14 5V3a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v2h8Z"></path>
+                                                    </svg>
+                                                </div>
+                                                <input
+                                                    type="text"
+                                                    id="quantity"
+                                                    placeholder="Cantidad"
+                                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-8 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-200 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                    value={quantity2}
+                                                    onChange={(e) => setQuantity2(e.target.value)}
+                                                />  </div>
+                                        </div>
+
+                                        <div className="mb-2">
+                                            <button
+                                                type="submit"
+                                                className="flex items-center justify-center w-full px-4 py-3 rounded-md bg-green-500 text-white font-semibold text-sm hover:bg-green-600 focus:outline-none focus:bg-green-600"
+                                            >
+                                                Subastar
+                                            </button>
+                                        </div>
+                                        </form>
+                                    </>
+                                ) : (
+                                    <form onSubmit={handleBuyStock}>
+                                        <div className="mb-3">
+                                            <label htmlFor="quantity" className="block mb-2 text-base font-semibold text-gray-900 dark:text-white">¿Cuantos Stocks quieres subastar?</label>
+
+                                            <div className="relative">
+                                                <div className="absolute inset-y-0 left-0 flex items-center p-2 pointer-events-none">
+                                                    <svg className="w-5 h-5 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24">
+                                                        <path stroke="currentColor" strokeLinecap="round" strokeWidth="2" d="M1 12c1.5 1.5 5.25 3 9 3s7.5-1.5 9-3m-9-1h.01M2 19h16a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1ZM14 5V3a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v2h8Z"></path>
+                                                    </svg>
+                                                </div>
+                                                <input
+                                                    type="text"
+                                                    id="quantity"
+                                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-8 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-200 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                    placeholder="0"
+                                                    value={quantity3}
+                                                    onChange={(e) => setQuantity3(e.target.value)}
+                                                />                                    </div>
+                                        </div>
+                                        
+                                        <div className="mb-2">
+                                            <button
+                                                type="submit"
+                                                className="flex items-center justify-center w-full px-4 py-3 rounded-md bg-green-500 text-white font-semibold text-sm hover:bg-green-600 focus:outline-none focus:bg-green-600"
+                                            >
+                                                Pagar con
+                                                <img src={WebpayLogo} alt="Webpay" className="w-auto mr-2 ml-1" />
+                                            </button>
+                                        </div>
+                                    </form>
+                                )}
                             </div>
+
 
                             {/* Sección predecir precio */}
                             <div className="bg-white border border-gray-200 rounded-lg shadow-md p-4">
@@ -271,8 +426,8 @@ const StockDetailsPage = () => {
                                                 id="quantity"
                                                 className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-8 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-200 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                                 placeholder="0"
-                                                value={quantity}
-                                                onChange={(e) => setQuantity(e.target.value)}
+                                                value={quantity4}
+                                                onChange={(e) => setQuantity4(e.target.value)}
                                             />                                    </div>
 
                                         <label htmlFor="quantity" className="block mb-2 text-base font-semibold text-gray-500 dark:text-white">2. Ingresa cantidad de días a futuro a predecir</label>
