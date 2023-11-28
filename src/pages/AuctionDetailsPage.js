@@ -6,7 +6,7 @@ import { jwtDecode } from 'jwt-decode';
 import Barra from '../components/navbar';
 import { useNavigate } from 'react-router-dom';
 
-const API_URL = 'http://localhost:3000'; //https://api.stockpedia.me';
+const API_URL = 'https://api.stockpedia.me'; //https://api.stockpedia.me';
 
 const AuctionDetailsPage = () => {
     const location = useLocation();
