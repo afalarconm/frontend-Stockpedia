@@ -120,13 +120,13 @@ const StockDetailsPage = () => {
         try {
 
             // Revisamos si la cantidad de stocks a comprar es mayor a la cantidad de stocks disponibles
-            if (quantity3 > stockData.stocksAdmin) {
+            if (parseInt(quantity3) > parseInt(stockData.stocksAdmin)) {
                 alert('¡Lo sentimos! No hay suficientes stocks disponibles para comprar.');
                 return;
             }
 
             const token = await TokenFetcher(getAccessTokenSilently);
-            const response = await axios.post(apiUrl, { symbol: stockData?.symbol, quantity: quantity3, ip: ip, }, {
+            const response = await axios.post(apiUrl, { symbol: stockData?.symbol, quantity: parseInt(quantity3), ip: ip, }, {
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
@@ -358,7 +358,7 @@ const StockDetailsPage = () => {
                                 ) : (
                                     <form onSubmit={handleBuyStock}>
                                         <div className="mb-3">
-                                            <label htmlFor="quantity" className="block mb-2 text-base font-semibold text-gray-900 dark:text-white">¿Cuantos Stocks quieres subastar?</label>
+                                            <label htmlFor="quantity" className="block mb-2 text-base font-semibold text-gray-900 dark:text-white">¿Cuantos Stocks quieres comprar?</label>
 
                                             <div className="relative">
                                                 <div className="absolute inset-y-0 left-0 flex items-center p-2 pointer-events-none">
