@@ -183,12 +183,12 @@ const StockDetailsPage = () => {
         // Le pedimos al api el token y la url para redirigir a webpay
         try {
 
-            if (quantity2 > stockData.stocksAdmin) {
+            if (parseInt(quantity2) > parseInt(stockData.stocksAdmin)) {
                 alert('¡Lo sentimos! No hay suficientes stocks disponibles para subastar.');
                 return;
             }
             const token = await TokenFetcher(getAccessTokenSilently);
-            const response = await axios.post(apiUrl, { stock_id: stockData?.symbol, quantity: quantity2 }, {
+            const response = await axios.post(apiUrl, { stock_id: stockData?.symbol, quantity: parseInt(quantity2) }, {
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
